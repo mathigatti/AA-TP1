@@ -1,0 +1,12 @@
+Atributos de cada mail:
+
+1. Ver las palabras que aparecen en los mails de spam y ham
+2. Ver la distribucion de las palabras en los mails de spam y ham (Por ejemplo el top 100 de palabras que mas aparecen en cada uno)
+3. Armar metricas de complejidad de textos
+4. Armar contador de cantidad de errores gramaticales y ortograficos
+5. Relación entre mayusculas y minusculas o Cantidad de mayúsculas consecutivas.
+6. Cantidad de Archivos adjuntos y links (O capaz ver si tiene algun tipo de archivo adjunto o no)
+
+
+Paper útil
+file:///home/mathi/Desktop/21ad08277291813690c41c14a55916e46034.pdf
