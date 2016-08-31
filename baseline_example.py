@@ -1,6 +1,6 @@
 # Aprendizaje Automatico - DC, FCEN, UBA
 # Segundo cuatrimestre 2016
-
+import re
 import json
 import numpy as np
 import pandas as pd
@@ -8,8 +8,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.cross_validation import cross_val_score
 
 # Leo los mails (poner los paths correctos).
-ham_txt= json.load(open('./jsons/ham_txt.json'))
-spam_txt= json.load(open('./jsons/spam_txt.json'))
+ham_txt= json.load(open('./jsons/ham_dev.json'))
+spam_txt= json.load(open('./jsons/spam_dev.json'))
 
 # Imprimo un mail de ham y spam como muestra.
 print ham_txt[0]
@@ -31,8 +31,26 @@ df['len'] = map(len, df.text)
 def count_spaces(txt): return txt.count(" ")
 df['count_spaces'] = map(count_spaces, df.text)
 
+# 3) Simbolo de dolar en txt
+def has_dollar(txt): 
+    if ('$' in txt):
+        return 1
+    else:
+        return 0
+df['has_dollar'] = map(has_dollar, df.text)
+
+# 4) has link http*://*
+def has_link(txt): 
+    found = re.match(r'.*https?://.*', txt.replace('\n','').replace(' ',''))
+    if found:
+        return 1
+    else:
+        return 0
+
+df['has_link'] = map(has_link, df.text)
+
 # Preparo data para clasificar
-X = df[['len', 'count_spaces']].values
+X = df[['len', 'count_spaces','has_link','has_dollar']].values
 y = df['class']
 
 # Elijo mi clasificador.
