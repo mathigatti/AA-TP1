@@ -4,8 +4,12 @@ import re
 import json
 import numpy as np
 import pandas as pd
+from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.cross_validation import cross_val_score
+from sklearn.externals.six import StringIO
+from IPython.display import Image 
+import pydotplus as pydot
 
 # Leo los mails (poner los paths correctos).
 ham_txt= json.load(open('./jsons/ham_dev.json'))
@@ -49,8 +53,18 @@ def has_link(txt):
 
 df['has_link'] = map(has_link, df.text)
 
+# 4) has HTML
+def has_html(txt): 
+    found = re.match(r'.*<html>.*</html>.*', txt.lower().replace('\n','').replace(' ',''))
+    if found:
+        return 1
+    else:
+        return 0
+
+df['has_html'] = map(has_html, df.text)
+
 # Preparo data para clasificar
-X = df[['len', 'count_spaces','has_link','has_dollar']].values
+X = df[['len', 'count_spaces','has_link','has_dollar','has_html']].values
 y = df['class']
 
 # Elijo mi clasificador.
@@ -61,3 +75,4 @@ clf = DecisionTreeClassifier()
 res = cross_val_score(clf, X, y, cv=10)
 print np.mean(res), np.std(res)
 # salida: 0.783040309346 0.0068052434174  (o similar)
+
