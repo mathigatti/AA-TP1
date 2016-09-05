@@ -39,7 +39,6 @@ if __name__ == '__main__':
     df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
     df['len'] = map(len, df.text)
     df['count_spaces'] = map(ma_count_spaces, df.text)
-
     df['has_dollar'] = map(ma_has_dollar, df.text)
     attribute_ratio(df,'has_dollar')
     df['has_link'] = map(ma_has_link, df.text)
