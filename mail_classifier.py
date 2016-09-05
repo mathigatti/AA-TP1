@@ -13,16 +13,6 @@ from mail_attributes import *
 
 
 
-def split_mail(txt):
-    t = tuple(txt.split('\r\n\r\n',1))                          
-    if len(t) == 1:                                             
-        t = tuple(txt.split('\n\n',1))                          
-        if len(t) == 1:                                         
-            t = tuple(txt.split('\r\r',1))
-            if len(t) == 1:                                     
-                t = (txt,'<empty>')                             
-    return t[0]                                                 
-                                                                
 def attribute_ratio(df,attribute):                              
     print attribute                                             
     print sum(df[attribute][:len(ham_txt)])/float(len(ham_txt)) # Armo un dataset de Pandas 
@@ -46,7 +36,6 @@ if __name__ == '__main__':
 
     df = pd.DataFrame(ham_txt+spam_txt, columns=['text'])
     #df['headers'], df['body']  = zip(*df['text'].map(split_mail))
-    df['headers'] = df['text'].map(split_mail)
     df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
     df['len'] = map(len, df.text)
     df['count_spaces'] = map(ma_count_spaces, df.text)
@@ -57,9 +46,9 @@ if __name__ == '__main__':
     attribute_ratio(df,'has_link')
     df['has_html'] = map(ma_has_html, df.text)
     attribute_ratio(df,'has_html')
-    df['has_cc'] = map(mha_has_cc, df.headers)
+    df['has_cc'] = map(ma_has_cc, df.text)
     attribute_ratio(df,'has_cc')
-    df['has_bcc'] = map(mha_has_bcc, df.headers)
+    df['has_bcc'] = map(ma_has_bcc, df.text)
     attribute_ratio(df,'has_bcc')
     
 
