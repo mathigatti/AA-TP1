@@ -64,7 +64,7 @@ if __name__ == '__main__':
     
 
     # Preparo data para clasificar
-    X = df[['len', 'count_spaces','has_link','has_dollar','has_html']].values
+    X = df[['len', 'count_spaces','has_link','has_dollar','has_html','has_cc','has_bcc']].values
     y = df['class']
 
     # Elijo mi clasificador.
