@@ -35,7 +35,7 @@ def ma_has_html(txt):
 
 # 6) has CC
 def mha_has_cc(txt): 
-    found = re.match(r'.*cc:.*', txt.lower().replace('\n','').replace(' ',''))
+    found = re.match(r'.*cc:.*', txt.lower().replace('\n','').replace(' ','').replace('bcc:',''))
     if found:
         return 1
     else:
