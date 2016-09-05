@@ -9,7 +9,7 @@ from sklearn.cross_validation import cross_val_score
 from sklearn.externals.six import StringIO
 from IPython.display import Image 
 import pydotplus as pydot
-from atributes import *
+from mail_attributes import *
 
 
 
