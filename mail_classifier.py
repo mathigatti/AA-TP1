@@ -11,18 +11,16 @@ from IPython.display import Image
 import pydotplus as pydot
 from mail_attributes import *
 
-
-
 def attribute_ratio(df,attribute):                              
     print attribute                                             
     print sum(df[attribute][:len(ham_txt)])/float(len(ham_txt)) # Armo un dataset de Pandas 
     print sum(df[attribute][len(ham_txt):])/float(len(spam_txt))# http://pandas.pydata.org/
 
+
 if __name__ == '__main__':
     # Leo los mails (poner los paths correctos).
-    ham_txt= json.load(open('./jsons/ham_dev.json'))
-    spam_txt= json.load(open('./jsons/spam_dev.json'))
-
+    ham_txt= json.load(open('./jsons/ham_txt.json'))
+    spam_txt= json.load(open('./jsons/spam_txt.json'))
     # Imprimo un mail de ham y spam como muestra.
     #print ham_txt[0]
     #print "--------------headers---------------------------------"
@@ -36,6 +34,10 @@ if __name__ == '__main__':
 
     df = pd.DataFrame(ham_txt+spam_txt, columns=['text'])
     #df['headers'], df['body']  = zip(*df['text'].map(split_mail))
+
+    contador(df.text, len(spam_txt), len(ham_txt),1000)
+
+
     df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
     df['len'] = map(len, df.text)
     df['count_spaces'] = map(ma_count_spaces, df.text)
@@ -49,7 +51,7 @@ if __name__ == '__main__':
     attribute_ratio(df,'has_cc')
     df['has_bcc'] = map(ma_has_bcc, df.text)
     attribute_ratio(df,'has_bcc')
-    
+
 
     # Preparo data para clasificar
     X = df[['len', 'count_spaces','has_link','has_dollar','has_html','has_cc','has_bcc']].values

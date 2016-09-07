@@ -1,5 +1,6 @@
 
 import re
+import pandas as pd
 
 ### helper functions
 def get_headers(mail):
@@ -69,3 +70,55 @@ def ma_has_bcc(mail):
         return 1
     else:
         return 0
+
+
+#Extraccion de palabras mas usadas
+
+def cantApariciones(textos):
+    dictTextos = pd.Series({})
+    textoLong = 0
+    for x in textos:
+        palabras = x.split()
+        textoLong += len(palabras)
+        for y in palabras:
+            if y in dictTextos.keys():
+                dictTextos[y] += 1.0
+            else:
+                dictTextos[y] = 1.0
+    dictTextos = pesoRelativo(dictTextos,textoLong)
+
+    return dictTextos
+
+def unirApariciones(dict1,dict2):
+    for x in dict1.keys():
+        if x in dict2.keys():
+            dict1[x] = dict1[x] - dict2[x]
+        else:
+            dict1[x] = dict1[x]
+    for x in dict2.keys():
+        if not x in dict1.keys():
+            dict1[x] = -dict2[x]
+    return dict1
+
+
+def pesoRelativo(textoDicc,textoLong):
+    for x in textoDicc.keys():
+        textoDicc[x] = textoDicc[x]/textoLong
+    return textoDicc
+
+def vector_palabras(texts1,texts2,n):
+    dictPalabras1 = cantApariciones(texts1)
+    dictPalabras2 = cantApariciones(texts2)
+
+    a = unirApariciones(dictPalabras1,dictPalabras2).sort_values()
+    return a[:n] + a[-n:]
+
+def contador(text,nSpam,nHam, bloques):
+    longitud = len(text)
+    cuantosMailsPorIteracion = int((nSpam+nHam)/bloques)
+    for i in range(bloques):
+        desdeSpam = int(nHam + nSpam*i/bloques)
+        hastaSpam = int(nHam + nSpam*(i+1)/bloques)
+        desdeHam = int(nHam*i/bloques)
+        hastaHam = int(nHam*(i+1)/bloques)
+        print vector_palabras(text[desdeHam:hastaHam],text[desdeSpam:hastaSpam],10)
