@@ -121,4 +121,4 @@ def contador(text,nSpam,nHam, bloques):
         hastaSpam = int(nHam + nSpam*(i+1)/bloques)
         desdeHam = int(nHam*i/bloques)
         hastaHam = int(nHam*(i+1)/bloques)
-        print vector_palabras(text[desdeHam:hastaHam],text[desdeSpam:hastaSpam],10)
+        print(vector_palabras(text[desdeHam:hastaHam],text[desdeSpam:hastaSpam],10))

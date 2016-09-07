@@ -12,9 +12,9 @@ import pydotplus as pydot
 from mail_attributes import *
 
 def attribute_ratio(df,attribute):                              
-    print attribute                                             
-    print sum(df[attribute][:len(ham_txt)])/float(len(ham_txt)) # Armo un dataset de Pandas 
-    print sum(df[attribute][len(ham_txt):])/float(len(spam_txt))# http://pandas.pydata.org/
+    print(attribute)                                             
+    print(sum(df[attribute][:len(ham_txt)])/float(len(ham_txt))) # Armo un dataset de Pandas 
+    print(sum(df[attribute][len(ham_txt):])/float(len(spam_txt)))# http://pandas.pydata.org/
 
 
 if __name__ == '__main__':
@@ -62,8 +62,8 @@ if __name__ == '__main__':
 
     # Ejecuto el clasificador entrenando con un esquema de cross validation
     # de 10 folds.
-    print 'Accuracy: Mean and std dev'
+    print('Accuracy: Mean and std dev')
     res = cross_val_score(clf, X, y, cv=10)
-    print np.mean(res), np.std(res)
+    print(np.mean(res), np.std(res))
     # salida: 0.783040309346 0.0068052434174  (o similar)
 
