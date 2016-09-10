@@ -23,6 +23,10 @@ def mail_body(mail):
                 t = (mail,'')                             
     return t[1]
 
+def mail_word_counter(mail,word_count): 
+        for word in mail.split():
+            word_count[word] += 1
+
 ### ATRIBUTOS
 # 1) Longitud del mail.
 def ma_len(mail):

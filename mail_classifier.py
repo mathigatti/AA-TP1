@@ -10,6 +10,7 @@ from sklearn.externals.six import StringIO
 from IPython.display import Image 
 import pydotplus as pydot
 from mail_attributes import *
+from collections import Counter,defaultdict
 
 def attribute_ratio(df,attribute):                              
     print(attribute)                                             
@@ -19,8 +20,8 @@ def attribute_ratio(df,attribute):
 
 if __name__ == '__main__':
     # Leo los mails (poner los paths correctos).
-    ham_txt= json.load(open('./jsons/ham_txt.json'))
-    spam_txt= json.load(open('./jsons/spam_txt.json'))
+    ham_txt= json.load(open('./jsons/ham_dev.json'))
+    spam_txt= json.load(open('./jsons/spam_dev.json'))
     # Imprimo un mail de ham y spam como muestra.
     #print ham_txt[0]
     #print "--------------headers---------------------------------"
@@ -35,8 +36,22 @@ if __name__ == '__main__':
     df = pd.DataFrame(ham_txt+spam_txt, columns=['text'])
     #df['headers'], df['body']  = zip(*df['text'].map(split_mail))
 
-    contador(df.text, len(spam_txt), len(ham_txt),1000)
+    #contador(df.text, len(spam_txt), len(ham_txt),1000)
+    #Cuento palabras calcular frecuencia de palabras por clase
+    word_count_ham=defaultdict(int)
+    word_count_spam=defaultdict(int)
 
+    map(lambda txt: mail_word_counter(mail_body(txt),word_count_ham),df.text[:len(ham_txt)])
+    word_freq_ham = {k: v / float(len(ham_txt)) for k, v in word_count_ham.iteritems()}
+    map(lambda txt: mail_word_counter(mail_body(txt),word_count_spam),df.text[:len(spam_txt)])
+    word_freq_spam = {k: v / float(len(spam_txt)) for k, v in word_count_spam.iteritems()}
+    
+    
+    #HAM Words - dict con palabras que parecen media vez por mail de ham y la palabra no aparece en spam o la diferencia de frecuencia
+    #es mayor a 0.5
+    ham_word_attributes = {k: v for k, v in word_freq_ham.iteritems() if v> 0.5 and ( word_freq_spam[k] is None or abs(word_freq_spam[k] - v) > 0.5  )  }
+    #SPAM Words - analogo
+    spam_word_attributes = {k: v for k, v in word_freq_spam.iteritems() if v> 0.5 and ( word_freq_ham[k] is None or abs(word_freq_ham[k] - v) > 0.5 )  }
 
     df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
     df['len'] = map(len, df.text)
