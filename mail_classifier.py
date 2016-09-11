@@ -41,21 +41,21 @@ if __name__ == '__main__':
     word_count_ham=defaultdict(int)
     word_count_spam=defaultdict(int)
 
-    map(lambda txt: mail_word_counter(mail_body(txt),word_count_ham),df.text[:len(ham_txt)])
-    word_freq_ham = {k: v / float(len(ham_txt)) for k, v in word_count_ham.iteritems()}
-    map(lambda txt: mail_word_counter(mail_body(txt),word_count_spam),df.text[len(spam_txt)+1:])
-    word_freq_spam = {k: v / float(len(spam_txt)) for k, v in word_count_spam.iteritems()}
+    #map(lambda txt: mail_word_counter(mail_body(txt),word_count_ham),df.text[:len(ham_txt)])
+    #word_freq_ham = {k: v / float(len(ham_txt)) for k, v in word_count_ham.iteritems()}
+    #map(lambda txt: mail_word_counter(mail_body(txt),word_count_spam),df.text[len(spam_txt)+1:])
+    #word_freq_spam = {k: v / float(len(spam_txt)) for k, v in word_count_spam.iteritems()}
     
     
     #HAM Words - dict con palabras que parecen media vez por mail de ham y la palabra no aparece en spam o la diferencia de frecuencia 
     #es mayor a 0.5
-    ham_word_attributes = {k: v for k, v in word_freq_ham.iteritems() if (( v> 0.5 and  word_freq_spam.get(k,None) is None)  or ( word_freq_spam.get(k,None) is not None and (v -  word_freq_spam[k]) > 0.5 ))    }
-    print 'Ham words'
-    print ham_word_attributes
+    #ham_word_attributes = {k: v for k, v in word_freq_ham.iteritems() if (( v> 0.5 and  word_freq_spam.get(k,None) is None)  or ( word_freq_spam.get(k,None) is not None and (v -  word_freq_spam[k]) > 0.5 ))    }
+    #print 'Ham words'
+    #print ham_word_attributes
     #SPAM Words - analogo
-    spam_word_attributes = {k: v for k, v in word_freq_spam.iteritems() if ( (v> 0.5 and  word_freq_ham.get(k,None) is None ) or ( word_freq_ham.get(k,None) is not None and (v - word_freq_ham[k])  > 0.5 ))  }
-    print 'Spam words'
-    print spam_word_attributes 
+    #spam_word_attributes = {k: v for k, v in word_freq_spam.iteritems() if ( (v> 0.5 and  word_freq_ham.get(k,None) is None ) or ( word_freq_ham.get(k,None) is not None and (v - word_freq_ham[k])  > 0.5 ))  }
+    #print 'Spam words'
+    #print spam_word_attributes 
 
     df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
     df['len'] = map(len, df.text)
@@ -70,10 +70,13 @@ if __name__ == '__main__':
     attribute_ratio(df,'has_cc')
     df['has_bcc'] = map(ma_has_bcc, df.text)
     attribute_ratio(df,'has_bcc')
+    df['has_body'] = map(ma_has_body, df.text)
+    attribute_ratio(df,'has_body')
+    df['headers_count'] = map(ma_headers_count, df.text)
 
 
     # Preparo data para clasificar
-    X = df[['len', 'count_spaces','has_link','has_dollar','has_html','has_cc','has_bcc']].values
+    X = df[['len', 'count_spaces','has_link','has_dollar','has_html','has_cc','has_bcc','has_body','headers_count']].values
     y = df['class']
 
     # Elijo mi clasificador.

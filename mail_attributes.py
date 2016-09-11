@@ -2,28 +2,41 @@
 import re
 import pandas as pd
 
+class MailCorruptedException(Exception):
+        pass
+
 ### helper functions
-def get_headers(mail):
+def get_new_line_code(text):
+    if text.find('\r\n') >= 0 :
+        return '\r\n'
+    elif text.find('\r') >= 0 :
+        return '\r'
+    elif text.find('\n') >= 0 :
+        return '\n'
+    else:
+        raise MailCorruptedException('Not able to identify new line')
+
+def get_mail_headers(mail):
     t = tuple(mail.split('\r\n\r\n',1))
     if len(t) == 1:
-        t = tuple(mail.split('\n\n',1))  
+        t = tuple(mail.split('\n\n',1))
         if len(t) == 1:
-            t = tuple(mail.split('\r\r',1))  
+            t = tuple(mail.split('\r\r',1))
             if len(t) == 1:
                 t = (mail,'')
     return t[0]
 
-def mail_body(mail):
+def get_mail_body(mail):
     t = tuple(mail.split('\r\n\r\n',1))
     if len(t) == 1:
-        t = tuple(mail.split('\n\n',1))  
+        t = tuple(mail.split('\n\n',1))
         if len(t) == 1:
-            t = tuple(mail.split('\r\r',1))  
+            t = tuple(mail.split('\r\r',1))
             if len(t) == 1:
-                t = (mail,'')                             
+                t = (mail,'')
     return t[1]
 
-def mail_word_counter(mail,word_count): 
+def word_counter(text,word_count): 
         for word in mail.split():
             word_count[word] += 1
 
@@ -61,7 +74,7 @@ def ma_has_html(mail):
 
 # 6) has CC
 def ma_has_cc(mail): 
-    found = re.match(r'.*cc:.*', get_headers(mail).lower().replace('\n','').replace(' ','').replace('bcc:',''))
+    found = re.match(r'.*cc:.*', get_mail_headers(mail).lower().replace('\n','').replace(' ','').replace('bcc:',''))
     if found:
         return 1
     else:
@@ -69,11 +82,23 @@ def ma_has_cc(mail):
 
 # 7) has BCC
 def ma_has_bcc(mail): 
-    found = re.match(r'.*bcc:.*', get_headers(mail).lower().replace('\n','').replace(' ',''))
+    found = re.match(r'.*bcc:.*', get_mail_headers(mail).lower().replace('\n','').replace(' ',''))
     if found:
         return 1
     else:
         return 0
+
+# 8) has Body
+def ma_has_body(mail):
+    if get_mail_body(mail) == '':
+        return 0
+    else:
+        return 1
+# 9) headers count
+def ma_headers_count(mail):
+    hdr = get_mail_headers(mail)
+    nl = get_new_line_code(mail)
+    return len(nl.split(nl))
 
 
 #Extraccion de palabras mas usadas
