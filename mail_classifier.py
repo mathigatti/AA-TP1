@@ -49,11 +49,11 @@ if __name__ == '__main__':
     
     #HAM Words - dict con palabras que parecen media vez por mail de ham y la palabra no aparece en spam o la diferencia de frecuencia 
     #es mayor a 0.5
-    ham_word_attributes = {k: v for k, v in word_freq_ham.iteritems() if (( v> 0.5 and  word_freq_spam[k] is None)  or (v -  word_freq_spam[k] > 0.5 ))    }
+    ham_word_attributes = {k: v for k, v in word_freq_ham.iteritems() if (( v> 0.5 and  word_freq_spam.get(k,None) is None)  or ( word_freq_spam.get(k,None) is not None and (v -  word_freq_spam[k]) > 0.5 ))    }
     print 'Ham words'
     print ham_word_attributes
     #SPAM Words - analogo
-    spam_word_attributes = {k: v for k, v in word_freq_spam.iteritems() if ( (v> 0.5 and  word_freq_ham[k] is None ) or ( v - word_freq_ham[k]  > 0.5 ))  }
+    spam_word_attributes = {k: v for k, v in word_freq_spam.iteritems() if ( (v> 0.5 and  word_freq_ham.get(k,None) is None ) or ( word_freq_ham.get(k,None) is not None and (v - word_freq_ham[k])  > 0.5 ))  }
     print 'Spam words'
     print spam_word_attributes 
 
