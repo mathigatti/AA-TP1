@@ -11,6 +11,7 @@ from IPython.display import Image
 import pydotplus as pydot
 from mail_attributes import *
 from collections import Counter,defaultdict
+from sklearn import preprocessing
 
 def attribute_ratio(df,attribute):                              
     print(attribute)                                             
@@ -34,6 +35,7 @@ if __name__ == '__main__':
 
 
     df = pd.DataFrame(ham_txt+spam_txt, columns=['text'])
+    df['headers'] = map(lambda mail: mail_headers_to_dict(get_mail_headers(mail)),df.text)
     #df['headers'], df['body']  = zip(*df['text'].map(split_mail))
 
     #contador(df.text, len(spam_txt), len(ham_txt),1000)
@@ -72,11 +74,12 @@ if __name__ == '__main__':
     attribute_ratio(df,'has_bcc')
     df['has_body'] = map(ma_has_body, df.text)
     attribute_ratio(df,'has_body')
-    df['headers_count'] = map(ma_headers_count, df.text)
-
+    df['headers_count'] = map(ma_headers_count,df.headers)
+    df['content_type'] = preprocessing.LabelEncoder().fit_transform(map(ma_categorical_content_type,df.headers))
+    df['recipient_count'] = map(ma_recipient_count,df.headers)
 
     # Preparo data para clasificar
-    X = df[['len', 'count_spaces','has_link','has_dollar','has_html','has_cc','has_bcc','has_body','headers_count']].values
+    X = df[['len', 'count_spaces','has_link','has_dollar','has_html','has_cc','has_bcc','has_body','headers_count','content_type','recipient_count']].values
     y = df['class']
 
     # Elijo mi clasificador.

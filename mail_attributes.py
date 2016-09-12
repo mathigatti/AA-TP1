@@ -1,6 +1,7 @@
 
 import re
 import pandas as pd
+from collections import Counter,defaultdict
 
 class MailCorruptedException(Exception):
         pass
@@ -110,14 +111,29 @@ def ma_has_body(mail):
     else:
         return 1
 # 9) headers count
-def ma_headers_count(mail):
-    hdr = get_mail_headers(mail)
-    nl = get_new_line_code(mail)
-    return len(nl.split(nl))
+def ma_headers_count(headers):
+    return len(headers)
 
+# 10) content-type
+def ma_categorical_content_type(headers):
+    return headers.get('content-type','').split(';')[0].lower().strip()
 
+# 11) receipients_count
+def ma_recipient_count(headers):
+    count = 0
+    to = headers.get('to','')
+    if to !=  '':
+       count += len(to.split(',')) 
+    cc = headers.get('cc','')
+    if cc <> '':
+       count += len(cc.split(','))
+    bcc = headers.get('bcc','')
+    if bcc <> '':
+       count += len(bcc.split(',')) 
+    return count
+
+# 12) 
 #Extraccion de palabras mas usadas
-
 def cantApariciones(textos):
     dictTextos = pd.Series({})
     textoLong = 0
