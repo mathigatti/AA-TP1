@@ -95,20 +95,18 @@ def ma_has_html(mail):
         return 0
 
 # 6) has CC
-def ma_has_cc(mail): 
-    found = re.match(r'.*cc:.*', get_mail_headers(mail).lower().replace('\n','').replace(' ','').replace('bcc:',''))
-    if found:
-        return 1
-    else:
+def ma_has_cc(headers): 
+    if headers.get('cc','') == '':
         return 0
+    else:
+        return 1
 
 # 7) has BCC
-def ma_has_bcc(mail): 
-    found = re.match(r'.*bcc:.*', get_mail_headers(mail).lower().replace('\n','').replace(' ',''))
-    if found:
-        return 1
-    else:
+def ma_has_bcc(headers): 
+    if headers.get('bcc','') == '':
         return 0
+    else:
+        return 1
 
 # 8) has Body
 def ma_has_body(mail):

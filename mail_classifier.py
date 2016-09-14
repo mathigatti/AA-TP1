@@ -16,7 +16,7 @@ from enchant.checker import SpellChecker
 from enchant.tokenize import EmailFilter, URLFilter
 from os.path import exists,isfile
 
-def add_attribute(data_frame,attribure_name,function,input_attribute,encode=False):
+def add_attribute(data_frame,attribure_name,function,input_attribute,encode=False,save=True):
     json_file_path = 'jsons/' + attribure_name + '.json'
     print json_file_path
     if exists(json_file_path) and isfile(json_file_path):
@@ -28,35 +28,32 @@ def add_attribute(data_frame,attribure_name,function,input_attribute,encode=Fals
             data_frame[attribure_name] = preprocessing.LabelEncoder().fit_transform(data_frame[input_attribute].map(function))
         else:
             data_frame[attribure_name] = data_frame[input_attribute].map(function)
-        print 'saving json: ' + json_file_path
-        data_frame[attribure_name].to_json(json_file_path)
+        if save:
+            print 'saving json: ' + json_file_path
+            data_frame[attribure_name].to_json(json_file_path)
 
 def attribute_ratio(df,attribute):                              
-    print(attribute)                                             
-    print(sum(df[attribute][:len(ham_txt)])/float(len(ham_txt))) # Armo un dataset de Pandas 
-    print(sum(df[attribute][len(ham_txt):])/float(len(spam_txt)))# http://pandas.pydata.org/
+    print attribute
+    print '% True for ham: ' + str(sum(df[attribute][:df.ham_count])/float(df.ham_count)*100)
+    print '% True for spam: ' + str(sum(df[attribute][df.ham_count+1:])/float(df.spam_count)*100)
 
 
 if __name__ == '__main__':
-    # Leo los mails (poner los paths correctos).
-    ham_txt= json.load(open('./jsons/ham_dev.json'))
-    spam_txt= json.load(open('./jsons/spam_dev.json'))
-    # Imprimo un mail de ham y spam como muestra.
-    #print ham_txt[0]
-    #print "--------------headers---------------------------------"
-    #print ham_txt[0].split('\r\n\r\n',1)[0]
-    #print "--------------body----------------------------------------"
-    #print ham_txt[0].split('\r\n\r\n',1)[1]
-    #print "------------------------------------------------------"
-    #print spam_txt[0]
-    #print "------------------------------------------------------"
-
-
-    df = pd.DataFrame(ham_txt+spam_txt, columns=['raw_mail'])
-    df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
-    
-    add_attribute(df,'mail_headers_dict',lambda mail: mail_headers_to_dict(get_mail_headers(mail)),'raw_mail')
-    add_attribute(df,'raw_mail_body',get_mail_body,'raw_mail')
+    if exists('jsons/mail_training_set.json') and isfile('jsons/mail_training_set.json'):
+        df = pd.read_json('jsons/mail_training_set.json')
+        df.spam_count = len(df[df['class'] == 'spam' ])
+        df.ham_count = len(df[df['class'] == 'ham' ])
+        save_training_test = False
+    else:
+        ham_txt= json.load(open('./jsons/ham_dev.json'))
+        spam_txt= json.load(open('./jsons/spam_dev.json'))
+        df = pd.DataFrame(ham_txt+spam_txt, columns=['raw_mail'])
+        df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
+        df.spam_count = len(df[df['class'] == 'spam' ])
+        df.ham_count = len(df[df['class'] == 'ham' ])
+        add_attribute(df,'mail_headers_dict',lambda mail: mail_headers_to_dict(get_mail_headers(mail)),'raw_mail',save=False)
+        add_attribute(df,'raw_mail_body',get_mail_body,'raw_mail',save=False)
+        save_training_test = True
 
     #contador(df.raw_mail, len(spam_txt), len(ham_txt),1000)
     #Cuento palabras calcular frecuencia de palabras por clase
@@ -79,15 +76,15 @@ if __name__ == '__main__':
     #print 'Spam words'
     #print spam_word_attributes 
 
-    add_attribute(df,'spell_error_count',lambda mail: ma_spell_error_count(get_mail_body(mail)),'raw_mail')
+    add_attribute(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
     add_attribute(df,'raw_mail_len',len,'raw_mail')
     add_attribute(df,'raw_body_count_spaces',ma_count_spaces,'raw_mail_body')
     add_attribute(df,'has_dollar',ma_has_dollar,'raw_mail_body')
     add_attribute(df,'has_link',ma_has_link,'raw_mail_body')
     add_attribute(df,'has_html',ma_has_html,'raw_mail_body')
-    add_attribute(df,'has_cc',ma_has_cc,'raw_mail')
-    add_attribute(df,'has_bcc',ma_has_bcc,'raw_mail')
-    add_attribute(df,'has_body',ma_has_body,'raw_mail')
+    add_attribute(df,'has_cc',ma_has_cc,'mail_headers_dict')
+    add_attribute(df,'has_bcc',ma_has_bcc,'mail_headers_dict')
+    add_attribute(df,'has_body',ma_has_body,'raw_mail_body')
     add_attribute(df,'headers_count',ma_headers_count,'mail_headers_dict')
     add_attribute(df,'content_type',ma_categorical_content_type,'mail_headers_dict',encode=True)
     add_attribute(df,'recipient_count',ma_recipient_count,'mail_headers_dict')
@@ -109,5 +106,7 @@ if __name__ == '__main__':
     print('Accuracy: Mean and std dev')
     res = cross_val_score(clf, X, y, cv=10)
     print(np.mean(res), np.std(res))
-    # salida: 0.783040309346 0.0068052434174  (o similar)
+
+    if save_training_test == True:
+        df[['class','mail_headers_dict','raw_mail_body']].to_json('jsons/mail_training_set.json')
 
