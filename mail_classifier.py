@@ -12,6 +12,24 @@ import pydotplus as pydot
 from mail_attributes import *
 from collections import Counter,defaultdict
 from sklearn import preprocessing
+from enchant.checker import SpellChecker
+from enchant.tokenize import EmailFilter, URLFilter
+from os.path import exists,isfile
+
+def add_attribute(data_frame,attribure_name,function,input_attribute,encode=False):
+    json_file_path = 'jsons/' + attribure_name + '.json'
+    print json_file_path
+    if exists(json_file_path) and isfile(json_file_path):
+        print 'file exists will load data'
+        data_frame[attribure_name] = pd.read_json(json_file_path,typ='series')
+    else:
+        print 'file does not exists will process data'
+        if encode:
+            data_frame[attribure_name] = preprocessing.LabelEncoder().fit_transform(data_frame[input_attribute].map(function))
+        else:
+            data_frame[attribure_name] = data_frame[input_attribute].map(function)
+        print 'saving json: ' + json_file_path
+        data_frame[attribure_name].to_json(json_file_path)
 
 def attribute_ratio(df,attribute):                              
     print(attribute)                                             
@@ -34,18 +52,20 @@ if __name__ == '__main__':
     #print "------------------------------------------------------"
 
 
-    df = pd.DataFrame(ham_txt+spam_txt, columns=['text'])
-    df['headers'] = map(lambda mail: mail_headers_to_dict(get_mail_headers(mail)),df.text)
-    #df['headers'], df['body']  = zip(*df['text'].map(split_mail))
+    df = pd.DataFrame(ham_txt+spam_txt, columns=['raw_mail'])
+    df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
+    
+    add_attribute(df,'mail_headers_dict',lambda mail: mail_headers_to_dict(get_mail_headers(mail)),'raw_mail')
+    add_attribute(df,'raw_mail_body',get_mail_body,'raw_mail')
 
-    #contador(df.text, len(spam_txt), len(ham_txt),1000)
+    #contador(df.raw_mail, len(spam_txt), len(ham_txt),1000)
     #Cuento palabras calcular frecuencia de palabras por clase
     word_count_ham=defaultdict(int)
     word_count_spam=defaultdict(int)
 
-    #map(lambda txt: mail_word_counter(mail_body(txt),word_count_ham),df.text[:len(ham_txt)])
+    #map(lambda txt: mail_word_counter(mail_body(txt),word_count_ham),df.raw_mail[:len(ham_txt)])
     #word_freq_ham = {k: v / float(len(ham_txt)) for k, v in word_count_ham.iteritems()}
-    #map(lambda txt: mail_word_counter(mail_body(txt),word_count_spam),df.text[len(spam_txt)+1:])
+    #map(lambda txt: mail_word_counter(mail_body(txt),word_count_spam),df.raw_mail[len(spam_txt)+1:])
     #word_freq_spam = {k: v / float(len(spam_txt)) for k, v in word_count_spam.iteritems()}
     
     
@@ -59,27 +79,26 @@ if __name__ == '__main__':
     #print 'Spam words'
     #print spam_word_attributes 
 
-    df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
-    df['len'] = map(len, df.text)
-    df['count_spaces'] = map(ma_count_spaces, df.text)
-    df['has_dollar'] = map(ma_has_dollar, df.text)
+    add_attribute(df,'spell_error_count',lambda mail: ma_spell_error_count(get_mail_body(mail)),'raw_mail')
+    add_attribute(df,'raw_mail_len',len,'raw_mail')
+    add_attribute(df,'raw_body_count_spaces',ma_count_spaces,'raw_mail_body')
+    add_attribute(df,'has_dollar',ma_has_dollar,'raw_mail_body')
+    add_attribute(df,'has_link',ma_has_link,'raw_mail_body')
+    add_attribute(df,'has_html',ma_has_html,'raw_mail_body')
+    add_attribute(df,'has_cc',ma_has_cc,'raw_mail')
+    add_attribute(df,'has_bcc',ma_has_bcc,'raw_mail')
+    add_attribute(df,'has_body',ma_has_body,'raw_mail')
+    add_attribute(df,'headers_count',ma_headers_count,'mail_headers_dict')
+    add_attribute(df,'content_type',ma_categorical_content_type,'mail_headers_dict',encode=True)
+    add_attribute(df,'recipient_count',ma_recipient_count,'mail_headers_dict')
     attribute_ratio(df,'has_dollar')
-    df['has_link'] = map(ma_has_link, df.text)
     attribute_ratio(df,'has_link')
-    df['has_html'] = map(ma_has_html, df.text)
     attribute_ratio(df,'has_html')
-    df['has_cc'] = map(ma_has_cc, df.text)
     attribute_ratio(df,'has_cc')
-    df['has_bcc'] = map(ma_has_bcc, df.text)
     attribute_ratio(df,'has_bcc')
-    df['has_body'] = map(ma_has_body, df.text)
     attribute_ratio(df,'has_body')
-    df['headers_count'] = map(ma_headers_count,df.headers)
-    df['content_type'] = preprocessing.LabelEncoder().fit_transform(map(ma_categorical_content_type,df.headers))
-    df['recipient_count'] = map(ma_recipient_count,df.headers)
-
     # Preparo data para clasificar
-    X = df[['len', 'count_spaces','has_link','has_dollar','has_html','has_cc','has_bcc','has_body','headers_count','content_type','recipient_count']].values
+    X = df[['raw_mail_len', 'raw_body_count_spaces','has_link','has_dollar','has_html','has_cc','has_bcc','has_body','headers_count','content_type','recipient_count','spell_error_count']].values
     y = df['class']
 
     # Elijo mi clasificador.

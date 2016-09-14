@@ -2,6 +2,12 @@
 import re
 import pandas as pd
 from collections import Counter,defaultdict
+from enchant.checker import SpellChecker
+from enchant.tokenize import EmailFilter, URLFilter
+
+global mail_count
+
+mail_count = 0
 
 class MailCorruptedException(Exception):
         pass
@@ -132,7 +138,31 @@ def ma_recipient_count(headers):
        count += len(bcc.split(',')) 
     return count
 
-# 12) 
+# 12) Spell Error count
+def ma_spell_error_count(mail):
+    spell_checker = SpellChecker("en_US",filters=[EmailFilter,URLFilter])
+    count = 0
+    spell_checker.set_text(mail)
+    for err in spell_checker:
+        count += 1
+    return count
+
+# 13) boundary count
+
+# 14) attachemnet
+
+# 15) attachement type
+
+# 16) Grammar 
+    
+# 17) Non English characters
+
+# 18) emmbed image ? 
+
+# 19) Mail client x-mailer
+
+# 20)
+
 #Extraccion de palabras mas usadas
 def cantApariciones(textos):
     dictTextos = pd.Series({})
