@@ -120,7 +120,7 @@ def ma_headers_count(headers):
 
 # 10) content-type
 def ma_categorical_content_type(headers):
-    return headers.get('content-type','').split(';')[0].lower().strip()
+    return headers.get('content-type','').split(';')[0].lower().strip().split(' ')[0]
 
 # 11) receipients_count
 def ma_recipient_count(headers):
@@ -145,19 +145,40 @@ def ma_spell_error_count(mail):
         count += 1
     return count
 
-# 13) boundary count
+# 13) is multipart
+def ma_is_mulipart(headers):
+    content_type = ma_categorical_content_type(headers) 
+    found = re.match(r'multipart.*',content_type)
+    if found:
+        return 1
+    else:
+        return 0
 
-# 14) attachemnet
-
-# 15) attachement type
-
-# 16) Grammar 
+# 14) parts count
+def ma_parts_count(headers,raw_mail_body):
+    count = 1
+    if ma_is_mulipart(headers) == 1:
+        content_type = headers.get('content-type','')
+        from_pos = content_type.find('boundary=') + len('boundary=')
+        to_pos = from_pos + content_type[from_pos+1:].find('"')
+        boundary=content_type[from_pos+1:].strip('"')
+        count = len(raw_mail_body.replace('--' + boundary + '--','').split('--'+boundary)) 
+    return count
     
-# 17) Non English characters
+    
 
-# 18) emmbed image ? 
+# 15 ) attachemnet
 
-# 19) Mail client x-mailer
+
+# ) attachement type
+
+# ) Grammar 
+    
+# ) Non English characters
+
+# ) emmbed image ? 
+
+# ) Mail client x-mailer
 
 # 20)
 
