@@ -62,36 +62,15 @@ if __name__ == '__main__':
         df.ham_count = len(df[df['class'] == 'ham' ])
         save_training_test = False
     else:
-        ham_txt= json.load(open('./jsons/ham_dev.json'))
-        spam_txt= json.load(open('./jsons/spam_dev.json'))
-        df = pd.DataFrame(ham_txt+spam_txt, columns=['raw_mail'])
-        df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
+        ham_txt= json.load(open('./jsons/training_ham.json'))
+        spam_txt= json.load(open('./jsons/training_spam.json'))
+        df = pd.DataFrame(spam_txt+ham_txt, columns=['raw_mail'])
+        df['class'] = ['spam' for _ in range(len(spam_txt))]+['ham' for _ in range(len(ham_txt))]
         df.spam_count = len(df[df['class'] == 'spam' ])
         df.ham_count = len(df[df['class'] == 'ham' ])
         add_attribute_from_series(df,'mail_headers_dict',lambda mail: mail_headers_to_dict(get_mail_headers(mail)),df['raw_mail'],save=False)
         add_attribute_from_series(df,'raw_mail_body',get_mail_body,df['raw_mail'],save=False)
         save_training_test = True
-
-    #contador(df.raw_mail, len(spam_txt), len(ham_txt),1000)
-    #Cuento palabras calcular frecuencia de palabras por clase
-    word_count_ham=defaultdict(int)
-    word_count_spam=defaultdict(int)
-
-    #map(lambda txt: mail_word_counter(mail_body(txt),word_count_ham),df.raw_mail[:len(ham_txt)])
-    #word_freq_ham = {k: v / float(len(ham_txt)) for k, v in word_count_ham.iteritems()}
-    #map(lambda txt: mail_word_counter(mail_body(txt),word_count_spam),df.raw_mail[len(spam_txt)+1:])
-    #word_freq_spam = {k: v / float(len(spam_txt)) for k, v in word_count_spam.iteritems()}
-    
-    
-    #HAM Words - dict con palabras que parecen media vez por mail de ham y la palabra no aparece en spam o la diferencia de frecuencia 
-    #es mayor a 0.5
-    #ham_word_attributes = {k: v for k, v in word_freq_ham.iteritems() if (( v> 0.5 and  word_freq_spam.get(k,None) is None)  or ( word_freq_spam.get(k,None) is not None and (v -  word_freq_spam[k]) > 0.5 ))    }
-    #print 'Ham words'
-    #print ham_word_attributes
-    #SPAM Words - analogo
-    #spam_word_attributes = {k: v for k, v in word_freq_spam.iteritems() if ( (v> 0.5 and  word_freq_ham.get(k,None) is None ) or ( word_freq_ham.get(k,None) is not None and (v - word_freq_ham[k])  > 0.5 ))  }
-    #print 'Spam words'
-    #print spam_word_attributes 
 
     add_attribute_from_series(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
     add_attribute_from_series(df,'raw_mail_len',len,'raw_mail')
