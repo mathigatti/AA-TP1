@@ -68,8 +68,8 @@ if __name__ == '__main__':
         df['class'] = ['spam' for _ in range(len(spam_txt))]+['ham' for _ in range(len(ham_txt))]
         df.spam_count = len(df[df['class'] == 'spam' ])
         df.ham_count = len(df[df['class'] == 'ham' ])
-        add_attribute_from_series(df,'mail_headers_dict',lambda mail: mail_headers_to_dict(get_mail_headers(mail)),df['raw_mail'],save=False)
-        add_attribute_from_series(df,'raw_mail_body',get_mail_body,df['raw_mail'],save=False)
+        add_attribute_from_series(df,'mail_headers_dict',lambda mail: mail_headers_to_dict(get_mail_headers(mail)),'raw_mail',save=False)
+        add_attribute_from_series(df,'raw_mail_body',get_mail_body,'raw_mail',save=False)
         save_training_test = True
 
     add_attribute_from_series(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
