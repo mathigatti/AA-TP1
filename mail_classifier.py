@@ -3,9 +3,13 @@
 import json
 import numpy as np
 import pandas as pd
-from sklearn import tree
+from sklearn import tree, svm
+from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
+from sklearn.neighbors import NearestNeighbors
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.cross_validation import cross_val_score
+from sklearn.metrics import roc_auc_score, recall_score, precision_score
+from sklearn.cross_validation import cross_val_score, train_test_split
 from sklearn.externals.six import StringIO
 from IPython.display import Image 
 import pydotplus as pydot
@@ -19,6 +23,17 @@ import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 
 
+
+def booleanizar(vector):
+    yBool = []
+
+    for i in y: 
+        if i == 'spam': 
+            booleano=True 
+        else: 
+            booleano=False
+        yBool.append(booleano)
+    return yBool
 
 def add_attribute_from_series(data_frame,attribure_name,function,input_attribute,encode=False,save=True):
     json_file_path = 'jsons/' + attribure_name + '.json'
@@ -106,15 +121,69 @@ if __name__ == '__main__':
     # Preparo data para clasificar
     X = df[['raw_mail_len', 'raw_body_count_spaces','has_link','has_dollar','has_html','has_cc','has_bcc','has_body','headers_count','content_type','recipient_count','spell_error_count','parts_count','is_mulipart','parts_count','has_attachment','uppercase_count','a', 'and', 'for', 'of', 'to', 'in', 'the']].values
     y = df['class']
+    # True = Spam, False = Ham
+    yBool = booleanizar(y)
 
     # Elijo mi clasificador.
-    clf = DecisionTreeClassifier(class_weight='balanced')
+    dtc1 = DecisionTreeClassifier(class_weight='balanced', criterion='entropy', max_depth=2)
+    dtc2 = DecisionTreeClassifier(class_weight='balanced', max_depth=2)
+    dtc3 = DecisionTreeClassifier(criterion='entropy', max_depth=2)
+    dtc4 = DecisionTreeClassifier(max_depth=2)
+
+    gnb = GaussianNB()
+    bnb = BernoulliNB()
+    mnb = MultinomialNB()
+    svm = svm.SVC()
+    rfc = RandomForestClassifier(max_depth=3)
 
     # Ejecuto el clasificador entrenando con un esquema de cross validation
     # de 10 folds.
-    print('Accuracy: Mean and std dev')
-    res = cross_val_score(clf, X, y, cv=10)
-    print(np.mean(res), np.std(res))
+
+    print('Accuracy Decision Tree Classifier 1: Mean and std dev')
+    res1 = cross_val_score(dtc1, X, y, cv=10)
+    print(np.mean(res1), np.std(res1))
+
+    print('Accuracy Decision Tree Classifier 2: Mean and std dev')
+    res1 = cross_val_score(dtc2, X, y, cv=10)
+    print(np.mean(res1), np.std(res1))
+
+    print('Accuracy Decision Tree Classifier 3: Mean and std dev')
+    res1 = cross_val_score(dtc3, X, y, cv=10)
+    print(np.mean(res1), np.std(res1))
+
+    print('Accuracy Decision Tree Classifier 4: Mean and std dev')
+    res1 = cross_val_score(dtc4, X, y, cv=10)
+    print(np.mean(res1), np.std(res1))
+
+    print('Accuracy Gaussian Naive Bayes: Mean and std dev')
+    res2 = cross_val_score(gnb, X, y, cv=10)
+    print(np.mean(res2), np.std(res2))
+
+    print('Accuracy Bernoulli Naive Bayes: Mean and std dev')
+    res3 = cross_val_score(bnb, X, y, cv=10)
+    print(np.mean(res3), np.std(res3))
+
+    print('Accuracy Multinomial Naive Bayes: Mean and std dev')
+    res4 = cross_val_score(mnb, X, y, cv=10)
+    print(np.mean(res4), np.std(res4))
+
+    print('Accuracy Random Forest Classifier: Mean and std dev')
+    res5 = cross_val_score(rfc, X, y, cv=10)
+    print(np.mean(res5), np.std(res5))
+    # Pruebo calcular el recall, precision y roc auc para random forest
+    print('Recall Random Forest Classifier')
+    res6 = cross_val_score(rfc, X, yBool, scoring='recall', cv=10)
+    print(np.mean(res6), np.std(res6))
+    print('Precision Random Forest Classifier')
+    res6 = cross_val_score(rfc, X, yBool, scoring='precision', cv=10)
+    print(np.mean(res6), np.std(res6))
+    print('ROC AUC Random Forest Classifier')
+    res6 = cross_val_score(rfc, X, yBool, scoring='roc_auc', cv=10)
+    print(np.mean(res6), np.std(res6))
+
+#    print('Accuracy SVM: Mean and std dev')
+#    res5 = cross_val_score(svm, X, y, cv=10)
+#    print(np.mean(res5), np.std(res5))
 
     if save_training_test == True:
         df[['class','mail_headers_dict','raw_mail_body']].to_json('jsons/mail_training_set.json')
