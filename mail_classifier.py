@@ -50,6 +50,7 @@ def add_attribute_from_series(data_frame,attribure_name,function,input_attribute
         if save:
             print 'saving json: ' + json_file_path
             data_frame[attribure_name].to_json(json_file_path)
+    df.attributes.append(attribure_name)
 
 #Allows to work with multiple input attributes, function is df row
 def add_attribute_from_df(data_frame,attribure_name,function,encode=False,save=True):
@@ -67,6 +68,7 @@ def add_attribute_from_df(data_frame,attribure_name,function,encode=False,save=T
         if save:
             print 'saving json: ' + json_file_path
             data_frame[attribure_name].to_json(json_file_path)
+    df.attributes.append(attribure_name)
 
 def attribute_ratio(df,attribute):                            
     print attribute
@@ -77,6 +79,7 @@ def attribute_ratio(df,attribute):
 if __name__ == '__main__':
     if exists('jsons/mail_training_set.json') and isfile('jsons/mail_training_set.json'):
         df = pd.read_json('jsons/mail_training_set.json')
+        df.attributes=list();
         df.spam_count = len(df[df['class'] == 'spam' ])
         df.ham_count = len(df[df['class'] == 'ham' ])
         save_training_test = False
@@ -84,13 +87,15 @@ if __name__ == '__main__':
         ham_txt= json.load(open('./jsons/training_ham.json'))
         spam_txt= json.load(open('./jsons/training_spam.json'))
         df = pd.DataFrame(spam_txt+ham_txt, columns=['raw_mail'])
+        df.attributes=list();
         df['class'] = ['spam' for _ in range(len(spam_txt))]+['ham' for _ in range(len(ham_txt))]
         df.spam_count = len(df[df['class'] == 'spam' ])
         df.ham_count = len(df[df['class'] == 'ham' ])
-        add_attribute_from_series(df,'mail_headers_dict',lambda mail: mail_headers_to_dict(get_mail_headers(mail)),'raw_mail',save=False)
-        add_attribute_from_series(df,'raw_mail_body',get_mail_body,'raw_mail',save=False)
+        df['mail_headers_dict'] = map(lambda mail: mail_headers_to_dict(get_mail_headers(mail)),df['raw_mail'])
+        df['raw_mail_body'] = map(get_mail_body,df['raw_mail'])
         save_training_test = True
 
+    
     add_attribute_from_series(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
     add_attribute_from_series(df,'raw_mail_len',len,'raw_mail')
     add_attribute_from_series(df,'raw_body_count_spaces',ma_count_spaces,'raw_mail_body')
@@ -119,7 +124,7 @@ if __name__ == '__main__':
     attribute_ratio(df,'has_bcc')
     attribute_ratio(df,'has_body')
     # Preparo data para clasificar
-    X = df[['raw_mail_len', 'raw_body_count_spaces','has_link','has_dollar','has_html','has_cc','has_bcc','has_body','headers_count','content_type','recipient_count','spell_error_count','parts_count','is_mulipart','parts_count','has_attachment','uppercase_count','a', 'and', 'for', 'of', 'to', 'in', 'the']].values
+    X = df[df.attributes].values
     y = df['class']
     # True = Spam, False = Ham
     yBool = booleanizar(y)
@@ -189,8 +194,9 @@ if __name__ == '__main__':
         df[['class','mail_headers_dict','raw_mail_body']].to_json('jsons/mail_training_set.json')
 
     dtc4.fit(X,y) 
+    
     with open("mail_classifier.dot", 'w') as f:
-        f = tree.export_graphviz(dtc4, out_file=f)
+        f = tree.export_graphviz(dtc4,feature_names=df.attributes,out_file=f)
 
 
     # scores_max_depth  = defaultdict(list)
