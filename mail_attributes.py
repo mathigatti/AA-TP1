@@ -153,7 +153,7 @@ def ma_is_mulipart(headers):
 
 # 14) parts count
 def ma_parts_count(headers,raw_mail_body):
-    count = 1
+    count = 0
     if ma_is_mulipart(headers) == 1:
         content_type = headers.get('content-type','')
         from_pos = content_type.find('boundary=') + len('boundary=')
@@ -165,6 +165,24 @@ def ma_parts_count(headers,raw_mail_body):
     
 
 # 15 ) attachemnet
+def ma_has_attachment(headers,raw_mail_body):
+    if ma_is_mulipart(headers) == 1:
+        content_type = headers.get('content-type','')
+        from_pos = content_type.find('boundary=') + len('boundary=')
+        to_pos = from_pos + content_type[from_pos+1:].find('"')
+        boundary=content_type[from_pos+1:].strip('"')
+        for part in raw_mail_body.replace('--' + boundary + '--','').split('--'+boundary):
+            if part.find('content-type') > 0 and ( part.find('/html') < 0 or part.find('text/') <0 ):
+                return 1
+    return 0
+
+# 16 ) has_word
+def ma_word_count(word,raw_mail_body):
+    return raw_mail_body.lower().count(' '+ word + ' '  )
+
+# 17) Uppercase count
+def ma_uppercase_count(raw_mail_body):
+    return  sum(1 for c in raw_mail_body if c.isupper())
 
 
 # ) attachement type
