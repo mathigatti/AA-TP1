@@ -190,7 +190,7 @@ if __name__ == '__main__':
 
     dtc4.fit(X,y) 
     with open("mail_classifier.dot", 'w') as f:
-        f = tree.export_graphviz(clf, out_file=f)
+        f = tree.export_graphviz(dtc4, out_file=f)
 
 
     # scores_max_depth  = defaultdict(list)
