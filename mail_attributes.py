@@ -196,15 +196,23 @@ def ma_has_non_english_chars(raw_mail_body):
 # 19 ) Mail client x-mailer
 def ma_mailer(headers): 
     return headers.get('x-mailer','undefined')
+
+# 20 ) subject length
+def ma_subject_length(headers): 
+    return len(headers.get('subject',''))
+
+# 21) content-transfer-encoding 
+def ma_content_transfer_encoding(headers): 
+    return headers.get('content-transfer-encoding','undefined')
     
-# ) attachement type
+# 22) spaces ratio on body
+def ma_spaces_over_len(raw_mail_body):
+    if raw_mail_body <> '':
+        return (raw_mail_body.count(' ') / float(len(raw_mail_body)))
+    else:
+        return 0
 
-# ) Grammar 
-    
 
 
-# ) emmbed image ? 
 
-# ) Mail client x-mailer
 
-# 20)

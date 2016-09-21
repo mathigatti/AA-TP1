@@ -112,6 +112,10 @@ if __name__ == '__main__':
     add_attribute_from_series(df,'uppercase_count',ma_uppercase_count,'raw_mail_body')
     add_attribute_from_series(df,'has_non_english_chars',ma_has_non_english_chars,'raw_mail_body')
     add_attribute_from_series(df,'mailer',ma_mailer,'mail_headers_dict',encode=True)
+    add_attribute_from_series(df,'subject_length',ma_subject_length,'mail_headers_dict')
+    add_attribute_from_series(df,'content_transfer_encoding,',ma_content_transfer_encoding,'mail_headers_dict',encode=True)
+    add_attribute_from_series(df,'spaces_over_len',ma_spaces_over_len,'raw_mail_body')
+
     #df['parts_count'] = df.apply(lambda row:ma_parts_count(row['mail_headers_dict'],row['raw_mail_body']),axis=1)
     add_attribute_from_df(df,'parts_count',lambda row:ma_parts_count(row['mail_headers_dict'],row['raw_mail_body']))
     add_attribute_from_df(df,'has_attachment',lambda row:ma_has_attachment(row['mail_headers_dict'],row['raw_mail_body']))
@@ -135,6 +139,7 @@ if __name__ == '__main__':
     yBool = booleanizar(y)
 
     # Elijo mi clasificador.
+    dtc0 = DecisionTreeClassifier(class_weight='balanced')
     dtc1 = DecisionTreeClassifier(class_weight='balanced', criterion='entropy', max_depth=2)
     dtc2 = DecisionTreeClassifier(class_weight='balanced', max_depth=2)
     dtc3 = DecisionTreeClassifier(criterion='entropy', max_depth=2)
@@ -148,6 +153,9 @@ if __name__ == '__main__':
 
     # Ejecuto el clasificador entrenando con un esquema de cross validation
     # de 10 folds.
+    print('Accuracy Decision Tree Classifier 0: Mean and std dev')
+    res0 = cross_val_score(dtc0, X, y, cv=10)
+    print(np.mean(res0), np.std(res0))
 
     print('Accuracy Decision Tree Classifier 1: Mean and std dev')
     res1 = cross_val_score(dtc1, X, y, cv=10)
