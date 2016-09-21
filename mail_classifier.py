@@ -188,7 +188,7 @@ if __name__ == '__main__':
     if save_training_test == True:
         df[['class','mail_headers_dict','raw_mail_body']].to_json('jsons/mail_training_set.json')
 
-    clf.fit(X,y) 
+    dtc4.fit(X,y) 
     with open("mail_classifier.dot", 'w') as f:
         f = tree.export_graphviz(clf, out_file=f)
 
