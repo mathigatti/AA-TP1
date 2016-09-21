@@ -110,6 +110,8 @@ if __name__ == '__main__':
     add_attribute_from_series(df,'recipient_count',ma_recipient_count,'mail_headers_dict')
     add_attribute_from_series(df,'is_mulipart',ma_is_mulipart,'mail_headers_dict')
     add_attribute_from_series(df,'uppercase_count',ma_uppercase_count,'raw_mail_body')
+    add_attribute_from_series(df,'has_non_english_chars',ma_has_non_english_chars,'raw_mail_body')
+    add_attribute_from_series(df,'mailer',ma_mailer,'mail_headers_dict',encode=True)
     #df['parts_count'] = df.apply(lambda row:ma_parts_count(row['mail_headers_dict'],row['raw_mail_body']),axis=1)
     add_attribute_from_df(df,'parts_count',lambda row:ma_parts_count(row['mail_headers_dict'],row['raw_mail_body']))
     add_attribute_from_df(df,'has_attachment',lambda row:ma_has_attachment(row['mail_headers_dict'],row['raw_mail_body']))
@@ -123,6 +125,9 @@ if __name__ == '__main__':
     attribute_ratio(df,'has_cc')
     attribute_ratio(df,'has_bcc')
     attribute_ratio(df,'has_body')
+    attribute_ratio(df,'is_mulipart')
+    attribute_ratio(df,'has_non_english_chars')
+    attribute_ratio(df,'has_attachment')
     # Preparo data para clasificar
     X = df[df.attributes].values
     y = df['class']

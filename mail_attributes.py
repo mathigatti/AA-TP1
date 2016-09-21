@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 import re
 import pandas as pd
 from collections import Counter,defaultdict
@@ -184,12 +184,24 @@ def ma_word_count(word,raw_mail_body):
 def ma_uppercase_count(raw_mail_body):
     return  sum(1 for c in raw_mail_body if c.isupper())
 
+# 18 ) Has Non English characters
+def ma_has_non_english_chars(raw_mail_body):
+    try:
+        raw_mail_body.decode('ascii')
+    except:
+        return 1
+    else:
+        return 0
 
+# 19 ) Mail client x-mailer
+def ma_mailer(headers): 
+    return headers.get('x-mailer','undefined')
+    
 # ) attachement type
 
 # ) Grammar 
     
-# ) Non English characters
+
 
 # ) emmbed image ? 
 
