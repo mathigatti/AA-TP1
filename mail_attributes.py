@@ -4,13 +4,7 @@ import pandas as pd
 from collections import Counter,defaultdict
 from enchant.checker import SpellChecker
 from enchant.tokenize import EmailFilter, URLFilter
-
-global mail_count
-
-mail_count = 0
-
-class MailCorruptedException(Exception):
-        pass
+from mail_utils import *
 
 ### helper functions
 def get_new_line_code(text):

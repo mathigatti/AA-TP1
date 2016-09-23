@@ -14,6 +14,7 @@ from sklearn.externals.six import StringIO
 from IPython.display import Image 
 import pydotplus as pydot
 from mail_attributes import *
+from mail_utils import *
 from collections import Counter,defaultdict
 from sklearn import preprocessing
 from enchant.checker import SpellChecker
