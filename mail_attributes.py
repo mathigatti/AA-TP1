@@ -1,16 +1,10 @@
-
+# -*- coding: utf-8 -*-
 import re
 import pandas as pd
 from collections import Counter,defaultdict
 from enchant.checker import SpellChecker
 from enchant.tokenize import EmailFilter, URLFilter
-
-global mail_count
-
-mail_count = 0
-
-class MailCorruptedException(Exception):
-        pass
+from mail_utils import *
 
 ### helper functions
 def get_new_line_code(text):
@@ -153,7 +147,7 @@ def ma_is_mulipart(headers):
 
 # 14) parts count
 def ma_parts_count(headers,raw_mail_body):
-    count = 1
+    count = 0
     if ma_is_mulipart(headers) == 1:
         content_type = headers.get('content-type','')
         from_pos = content_type.find('boundary=') + len('boundary=')
@@ -165,16 +159,54 @@ def ma_parts_count(headers,raw_mail_body):
     
 
 # 15 ) attachemnet
+def ma_has_attachment(headers,raw_mail_body):
+    if ma_is_mulipart(headers) == 1:
+        content_type = headers.get('content-type','')
+        from_pos = content_type.find('boundary=') + len('boundary=')
+        to_pos = from_pos + content_type[from_pos+1:].find('"')
+        boundary=content_type[from_pos+1:].strip('"')
+        for part in raw_mail_body.replace('--' + boundary + '--','').split('--'+boundary):
+            if part.find('content-type') > 0 and ( part.find('/html') < 0 or part.find('text/') <0 ):
+                return 1
+    return 0
 
+# 16 ) has_word
+def ma_word_count(word,raw_mail_body):
+    return raw_mail_body.lower().count(' '+ word + ' '  )
 
-# ) attachement type
+# 17) Uppercase count
+def ma_uppercase_count(raw_mail_body):
+    return  sum(1 for c in raw_mail_body if c.isupper())
 
-# ) Grammar 
+# 18 ) Has Non English characters
+def ma_has_non_english_chars(raw_mail_body):
+    try:
+        raw_mail_body.decode('ascii')
+    except:
+        return 1
+    else:
+        return 0
+
+# 19 ) Mail client x-mailer
+def ma_mailer(headers): 
+    return headers.get('x-mailer','undefined')
+
+# 20 ) subject length
+def ma_subject_length(headers): 
+    return len(headers.get('subject',''))
+
+# 21) content-transfer-encoding 
+def ma_content_transfer_encoding(headers): 
+    return headers.get('content-transfer-encoding','undefined')
     
-# ) Non English characters
+# 22) spaces ratio on body
+def ma_spaces_over_len(raw_mail_body):
+    if raw_mail_body <> '':
+        return (raw_mail_body.count(' ') / float(len(raw_mail_body)))
+    else:
+        return 0
 
-# ) emmbed image ? 
 
-# ) Mail client x-mailer
 
-# 20)
+
+
