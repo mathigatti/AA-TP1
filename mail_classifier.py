@@ -22,8 +22,12 @@ from enchant.tokenize import EmailFilter, URLFilter
 from os.path import exists,isfile
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
+from frequents import palabrasFrecuentes
 
+global palabrasFrecuentes
 
+def esta(word,mail):
+    return word in mail
 
 def booleanizar(vector):
     yBool = []
@@ -101,8 +105,11 @@ if __name__ == '__main__':
         df['mail_headers_dict'] = map(lambda mail: mail_headers_to_dict(get_mail_headers(mail)),df['raw_mail'])
         df['raw_mail_body'] = map(get_mail_body,df['raw_mail'])
         save_training_test = True
-
     
+    i = 0
+    for palabraFrecuente in palabrasFrecuentes:
+        add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
+
     add_attribute_from_series(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
     add_attribute_from_series(df,'raw_mail_len',len,'raw_mail')
     add_attribute_from_series(df,'raw_body_count_spaces',ma_count_spaces,'raw_mail_body')
@@ -160,9 +167,8 @@ if __name__ == '__main__':
 
     # Ejecuto el clasificador entrenando con un esquema de cross validation
     # de 10 folds.
-    print('Accuracy Decision Tree Classifier 0: Mean and std dev')
-    res0 = cross_val_score(dtc0, X, y, cv=10)
-    print(np.mean(res0), np.std(res0))
+
+    cross_validation_f05('Decision Tree 0', dtc0, X, yBool)
 
     cross_validation_f05('Decision Tree 1', dtc1, X, yBool)
 
