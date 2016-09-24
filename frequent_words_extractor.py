@@ -33,7 +33,8 @@ if __name__ == '__main__':
 	word_count_ham=defaultdict(int)
 	word_count_spam=defaultdict(int)
 
-	map(lambda txt: word_counter(get_mail_body(txt),word_count_ham),df[-df.ham_count:]['raw_mail'])
+	map(lambda txt: word_counter(
+		,word_count_ham),df[-df.ham_count:]['raw_mail'])
 	word_freq_ham = {k: v / float(df.ham_count) for k, v in word_count_ham.iteritems()}
 	map(lambda txt: word_counter(get_mail_body(txt),word_count_spam),df[:df.spam_count]['raw_mail'])
 	word_freq_spam = {k: v / float(df.spam_count) for k, v in word_count_spam.iteritems()}

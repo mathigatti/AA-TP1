@@ -106,7 +106,6 @@ if __name__ == '__main__':
         df['raw_mail_body'] = map(get_mail_body,df['raw_mail'])
         save_training_test = True
     
-    i = 0
     for palabraFrecuente in palabrasFrecuentes:
         add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
 
@@ -134,21 +133,23 @@ if __name__ == '__main__':
     add_attribute_from_df(df,'parts_count',lambda row:ma_parts_count(row['mail_headers_dict'],row['raw_mail_body']))
     add_attribute_from_df(df,'has_attachment',lambda row:ma_has_attachment(row['mail_headers_dict'],row['raw_mail_body']))
 
-    for word in ['a', 'and', 'for', 'of', 'to', 'in', 'the']:
-        print word
-        add_attribute_from_series(df,word,lambda raw_mail_body: ma_word_count(word,raw_mail_body),'raw_mail_body')
-    attribute_ratio(df,'has_dollar')
-    attribute_ratio(df,'has_link')
-    attribute_ratio(df,'has_html')
-    attribute_ratio(df,'has_cc')
-    attribute_ratio(df,'has_bcc')
-    attribute_ratio(df,'has_body')
-    attribute_ratio(df,'is_mulipart')
-    attribute_ratio(df,'has_non_english_chars')
-    attribute_ratio(df,'has_attachment')
+    # for word in ['a', 'and', 'for', 'of', 'to', 'in', 'the']:
+    #     print word
+    #     add_attribute_from_series(df,word,lambda raw_mail_body: ma_word_count(word,raw_mail_body),'raw_mail_body')
+    # attribute_ratio(df,'has_dollar')
+    # attribute_ratio(df,'has_link')
+    # attribute_ratio(df,'has_html')
+    # attribute_ratio(df,'has_cc')
+    # attribute_ratio(df,'has_bcc')
+    # attribute_ratio(df,'has_body')
+    # attribute_ratio(df,'is_mulipart')
+    # attribute_ratio(df,'has_non_english_chars')
+    # attribute_ratio(df,'has_attachment')
+
     # Preparo data para clasificar
     X = df[df.attributes].values
     y = df['class']
+
     # True = Spam, False = Ham
     yBool = booleanizar(y)
 

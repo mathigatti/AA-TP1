@@ -7,6 +7,5 @@ Atributos de cada mail:
 5. Relación entre mayusculas y minusculas o Cantidad de mayúsculas consecutivas.
 6. Cantidad de Archivos adjuntos y links (O capaz ver si tiene algun tipo de archivo adjunto o no)
 
-
 Paper útil
 file:///home/mathi/Desktop/21ad08277291813690c41c14a55916e46034.pdf
