@@ -11,7 +11,7 @@ def open_set(path,set_name):
         df.set_name = set_name
         return df
     else:
-        raise Exception('mail_testing_set.json not found')
+        raise Exception('mail_testing_set.json not found\You can use consolidate_input_set.py to create it.\n')
 
 #Procesa tolas las funciones que se llaman ma_*
 # El nombre del atributo es lo que sigue a ma_
