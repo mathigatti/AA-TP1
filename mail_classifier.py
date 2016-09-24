@@ -8,7 +8,7 @@ from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
 from sklearn.neighbors import NearestNeighbors
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import roc_auc_score, recall_score, precision_score
+from sklearn.metrics import roc_auc_score, recall_score, precision_score, fbeta_score, make_scorer
 from sklearn.cross_validation import cross_val_score, train_test_split
 from sklearn.externals.six import StringIO
 from IPython.display import Image 
@@ -35,6 +35,12 @@ def booleanizar(vector):
             booleano=False
         yBool.append(booleano)
     return yBool
+
+def cross_validation_f05(nombre,metodo,x,y):
+    f05_score = make_scorer(fbeta_score, beta=0.5)
+    res = cross_val_score(metodo, x, y, scoring=f05_score, cv=10)
+    print nombre + ': Mean and Standard Deviation'
+    print(np.mean(res), np.std(res))
 
 def add_attribute_from_series(data_frame,attribure_name,function,input_attribute,encode=False,save=True):
     json_file_path = 'jsons/' + attribure_name + '.json'
@@ -158,51 +164,23 @@ if __name__ == '__main__':
     res0 = cross_val_score(dtc0, X, y, cv=10)
     print(np.mean(res0), np.std(res0))
 
-    print('Accuracy Decision Tree Classifier 1: Mean and std dev')
-    res1 = cross_val_score(dtc1, X, y, cv=10)
-    print(np.mean(res1), np.std(res1))
+    cross_validation_f05('Decision Tree 1', dtc1, X, yBool)
 
-    print('Accuracy Decision Tree Classifier 2: Mean and std dev')
-    res1 = cross_val_score(dtc2, X, y, cv=10)
-    print(np.mean(res1), np.std(res1))
+    cross_validation_f05('Decision Tree 2', dtc2, X, yBool)
 
-    print('Accuracy Decision Tree Classifier 3: Mean and std dev')
-    res1 = cross_val_score(dtc3, X, y, cv=10)
-    print(np.mean(res1), np.std(res1))
+    cross_validation_f05('Decision Tree 3', dtc3, X, yBool)
 
-    print('Accuracy Decision Tree Classifier 4: Mean and std dev')
-    res1 = cross_val_score(dtc4, X, y, cv=10)
-    print(np.mean(res1), np.std(res1))
+    cross_validation_f05('Decision Tree 4', dtc4, X, yBool)
 
-    print('Accuracy Gaussian Naive Bayes: Mean and std dev')
-    res2 = cross_val_score(gnb, X, y, cv=10)
-    print(np.mean(res2), np.std(res2))
+    cross_validation_f05('Gaussian Naive Bayes', gnb, X, yBool)
 
-    print('Accuracy Bernoulli Naive Bayes: Mean and std dev')
-    res3 = cross_val_score(bnb, X, y, cv=10)
-    print(np.mean(res3), np.std(res3))
+    cross_validation_f05('Bernoulli Naive Bayes', bnb, X, yBool)
 
-    print('Accuracy Multinomial Naive Bayes: Mean and std dev')
-    res4 = cross_val_score(mnb, X, y, cv=10)
-    print(np.mean(res4), np.std(res4))
+    cross_validation_f05('Multinomial Naive Bayes', mnb,X,yBool)
 
-    print('Accuracy Random Forest Classifier: Mean and std dev')
-    res5 = cross_val_score(rfc, X, y, cv=10)
-    print(np.mean(res5), np.std(res5))
-    # Pruebo calcular el recall, precision y roc auc para random forest
-    print('Recall Random Forest Classifier')
-    res6 = cross_val_score(rfc, X, yBool, scoring='recall', cv=10)
-    print(np.mean(res6), np.std(res6))
-    print('Precision Random Forest Classifier')
-    res6 = cross_val_score(rfc, X, yBool, scoring='precision', cv=10)
-    print(np.mean(res6), np.std(res6))
-    print('ROC AUC Random Forest Classifier')
-    res6 = cross_val_score(rfc, X, yBool, scoring='roc_auc', cv=10)
-    print(np.mean(res6), np.std(res6))
+    cross_validation_f05('Random Forest', rfc,X,yBool)
 
-#    print('Accuracy SVM: Mean and std dev')
-#    res5 = cross_val_score(svm, X, y, cv=10)
-#    print(np.mean(res5), np.std(res5))
+#   Faltan SVM, KNN y Arbol de Decision con Pruning como minimo para probar
 
     if save_training_test == True:
         df[['class','mail_headers_dict','raw_mail_body']].to_json('jsons/mail_training_set.json')
