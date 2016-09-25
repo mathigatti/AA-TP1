@@ -110,7 +110,7 @@ if __name__ == '__main__':
         add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
 
     add_attribute_from_series(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
-    add_attribute_from_series(df,'raw_mail_len',len,'raw_mail')
+    add_attribute_from_series(df,'raw_mail_len',len,'raw_mail_body')
     add_attribute_from_series(df,'raw_body_count_spaces',ma_count_spaces,'raw_mail_body')
     add_attribute_from_series(df,'has_dollar',ma_has_dollar,'raw_mail_body')
     add_attribute_from_series(df,'has_link',ma_has_link,'raw_mail_body')
