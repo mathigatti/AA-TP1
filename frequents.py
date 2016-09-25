@@ -1,5 +1,11 @@
-#Lista de las 1000 palabras mas frecuentes
 
+
+global palabrasFrecuentes
+
+def esta(word,mail):
+    return word in mail
+
+#Lista de las 1000 palabras mas frecuentes 
 palabrasFrecuentes = ['lmtpa;',
  # 'abzt',
  # 'x-sieve:',

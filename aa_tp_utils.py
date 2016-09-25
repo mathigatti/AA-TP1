@@ -2,7 +2,9 @@ from mail_attributes import *
 from os.path import exists,isfile
 from sklearn import preprocessing
 from frequents import palabrasFrecuentes
-from sklearn.metrics import precision_score,recall_score,accuracy_score
+from sklearn.metrics import roc_auc_score, recall_score, precision_score, fbeta_score, make_scorer, accuracy_score
+from sklearn.cross_validation import cross_val_score, train_test_split
+from frequents import palabrasFrecuentes,esta
 
 def open_set(path,set_name):
     if exists(path) and isfile(path):
@@ -45,10 +47,10 @@ def process_attributes(df):
     for word in ['a', 'and', 'for', 'of', 'to', 'in', 'the']:
         print word
         add_attribute_from_series(df,word,lambda raw_mail_body: ma_word_count(word,raw_mail_body),'raw_mail_body')
-    # for palabraFrecuente in palabrasFrecuentes:
-    #     add_attribute_from_series(df,palabraFrecuente,lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
+    for palabraFrecuente in palabrasFrecuentes:
+         add_attribute_from_series(df,palabraFrecuente,lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
 
-def booleanizar(vector):
+def booleanizar(y):
     yBool = []
 
     for i in y: 
@@ -111,3 +113,9 @@ def recall(y_true,y_pred):
 def accuracy(y_true,y_pred):
     return accuracy_score(y_true,y_pred)
 
+
+def cross_validation_f05(nombre,metodo,x,y):
+    f05_score = make_scorer(fbeta_score, beta=0.5)
+    res = cross_val_score(metodo, x, y, scoring=f05_score, cv=10)
+    print nombre + ': Mean and Standard Deviation'
+    print(np.mean(res), np.std(res))
