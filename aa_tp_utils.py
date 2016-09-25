@@ -1,6 +1,8 @@
 from mail_attributes import *
 from os.path import exists,isfile
 from sklearn import preprocessing
+from frequents import palabrasFrecuentes
+from sklearn.metrics import precision_score,recall_score,accuracy_score
 
 def open_set(path,set_name):
     if exists(path) and isfile(path):
@@ -43,6 +45,8 @@ def process_attributes(df):
     for word in ['a', 'and', 'for', 'of', 'to', 'in', 'the']:
         print word
         add_attribute_from_series(df,word,lambda raw_mail_body: ma_word_count(word,raw_mail_body),'raw_mail_body')
+    # for palabraFrecuente in palabrasFrecuentes:
+    #     add_attribute_from_series(df,palabraFrecuente,lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
 
 def booleanizar(vector):
     yBool = []
@@ -96,4 +100,14 @@ def attribute_ratio(df,attribute):
     print attribute
     print '% True for ham: ' + str(sum(df[attribute][:df.ham_count])/float(df.ham_count)*100)
     print '% True for spam: ' + str(sum(df[attribute][df.ham_count+1:])/float(df.spam_count)*100)
+
+
+def precision(y_true,y_pred):
+    return precision_score(y_true,y_pred,pos_label='spam')
+
+def recall(y_true,y_pred):
+    return recall_score(y_true,y_pred,pos_label='spam')
+
+def accuracy(y_true,y_pred):
+    return accuracy_score(y_true,y_pred)
 

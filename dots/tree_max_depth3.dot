@@ -1,0 +1,32 @@
+digraph Tree {
+node [shape=box] ;
+0 [label="content_type <= 12.5\ngini = 0.5\nsamples = 54000\nvalue = [27000, 27000]\nclass = spam"] ;
+1 [label="has_html <= 0.5\ngini = 0.2259\nsamples = 24686\nvalue = [3205, 21481]\nclass = ham"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="raw_mail_len <= 18485.5\ngini = 0.4588\nsamples = 8513\nvalue = [3034, 5479]\nclass = ham"] ;
+1 -> 2 ;
+3 [label="gini = 0.4149\nsamples = 7559\nvalue = [2220, 5339]\nclass = ham"] ;
+2 -> 3 ;
+4 [label="gini = 0.2504\nsamples = 954\nvalue = [814, 140]\nclass = spam"] ;
+2 -> 4 ;
+5 [label="spaces_over_len <= 0.8015\ngini = 0.0209\nsamples = 16173\nvalue = [171, 16002]\nclass = ham"] ;
+1 -> 5 ;
+6 [label="gini = 0.0182\nsamples = 16150\nvalue = [148, 16002]\nclass = ham"] ;
+5 -> 6 ;
+7 [label="gini = 0.0\nsamples = 23\nvalue = [23, 0]\nclass = spam"] ;
+5 -> 7 ;
+8 [label="recipient_count <= 1.5\ngini = 0.3057\nsamples = 29314\nvalue = [23795, 5519]\nclass = spam"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label="uppercase_count <= 0.5\ngini = 0.4979\nsamples = 10647\nvalue = [5665, 4982]\nclass = spam"] ;
+8 -> 9 ;
+10 [label="gini = 0.2862\nsamples = 4468\nvalue = [3695, 773]\nclass = spam"] ;
+9 -> 10 ;
+11 [label="gini = 0.4343\nsamples = 6179\nvalue = [1970, 4209]\nclass = ham"] ;
+9 -> 11 ;
+12 [label="has_link <= 0.5\ngini = 0.0559\nsamples = 18667\nvalue = [18130, 537]\nclass = spam"] ;
+8 -> 12 ;
+13 [label="gini = 0.015\nsamples = 16885\nvalue = [16757, 128]\nclass = spam"] ;
+12 -> 13 ;
+14 [label="gini = 0.3537\nsamples = 1782\nvalue = [1373, 409]\nclass = spam"] ;
+12 -> 14 ;
+}

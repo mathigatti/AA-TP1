@@ -12,10 +12,10 @@ from IPython.display import Image
 import pydotplus as pydot
 from collections import Counter,defaultdict
 from sklearn import preprocessing
-from os.path import exists,isfile
 import matplotlib.pyplot as plt
 from mail_attributes import *
 from  aa_tp_utils import *
+
 
 
 if __name__ == '__main__':
@@ -35,29 +35,41 @@ if __name__ == '__main__':
 	test_df.y_binarized = preprocessing.label_binarize(test_df.y,classes=['ham','spam'])
 	test_df.y_binarized = np.array([number[0] for number in test_df.y_binarized])
 
-	scorers=['accuracy','precision','recall','f1','roc_auc']
+	scorers={'accuracy':accuracy,'precision':precision,'recall':recall}
 	scores_max_depth  = defaultdict(list)
 
+	for i in range(1,30):
+		clf = DecisionTreeClassifier(class_weight='balanced',max_depth=i)
+		clf = clf.fit(train_df.X,train_df.y)
+		with open('dots/tree_max_depth'+str(i) +'.dot', 'w') as f:
+			f = tree.export_graphviz(clf,feature_names=train_df.attributes,class_names=['spam','ham'],out_file=f)
+		for scorer_name,scorer_func in scorers.iteritems():
+			print '-----------------',scorer_name,'-----------------'
+			cv_score = cross_val_score(clf, train_df.X, train_df.y_binarized, cv=10,scoring=scorer_name)
+			scores_max_depth['cv_' + scorer_name].append(np.mean(cv_score))
+			pred_y = clf.predict(train_df.X)
+			train_score = scorer_func(train_df.y,pred_y)
+			scores_max_depth[train_df.set_name + '_' + scorer_name].append(train_score)
+			pred_y = clf.predict(test_df.X)
+			test_score = scorer_func(test_df.y,pred_y)
+			scores_max_depth[test_df.set_name + '_' + scorer_name].append(test_score)
+			print i,' ',np.mean(cv_score),' ',np.std(cv_score),' ',train_score,' ',test_score
 
-	for scorer in ['accuracy']:
-		print '-----------------',scorer,'-----------------'
-		for i in range(1,30):
-		    clf = DecisionTreeClassifier(class_weight='balanced',max_depth=i)
-		    cv_score = cross_val_score(clf, train_df.X, train_df.y_binarized, cv=10,scoring=scorer)
-		    scores_max_depth['cv_' + scorer].append(np.mean(cv_score))
-		    clf.fit(train_df.X,train_df.y)
-		    train_score = clf.score(train_df.X,train_df.y)
-		    scores_max_depth[train_df.set_name + '_' + scorer].append(train_score)
-		    test_score = clf.score(test_df.X,test_df.y)
-		    scores_max_depth[test_df.set_name + '_' + scorer].append(test_score)
-		    print i,' ',np.mean(cv_score),' ',np.std(cv_score),' ',train_score,' ',test_score
-
-
-	plt.xlabel("Altura maxina del arbol")
-	plt.ylabel("Accuracy")
-	cv_accuracy, = plt.plot(range(1,30),scores_max_depth['cv_accuracy'])
-	train_accuracy, = plt.plot(range(1,30),scores_max_depth[train_df.set_name + '_accuracy'])
-	test_accuracy, = plt.plot(range(1,30),scores_max_depth[test_df.set_name + '_accuracy'])
-	plt.legend([cv_accuracy, train_accuracy],['Mean value from cross validation','On Training set'],loc='lower right')
-	plt.savefig('tree' + '_' + 'accuracy' + '_en_funcion_de_'+'max_depth' + '.pdf')
-	plt.close()
+	for scorer in scorers.iterkeys():
+		plt.xlabel("Altura maxina del arbol")
+		plt.ylabel(scorer)
+		cv_score_plt, = plt.plot(range(1,30),scores_max_depth['cv_' + scorer])
+		train_score_plt, = plt.plot(range(1,30),scores_max_depth[test_df.set_name + '_' + scorer])
+		plt.legend([cv_score_plt, train_score_plt],['Mean value from cross validation','On Training set'],loc='lower right')
+		plt.savefig('plots/tree' + '_' + scorer + '_en_funcion_de_'+'max_depth' + '.pdf')
+		plt.close()
+	
+	for scorer in scorers.iterkeys():
+		plt.xlabel("Altura maxina del arbol")
+		plt.ylabel(scorer)
+		cv_score_plt, = plt.plot(range(1,30),scores_max_depth['cv_' + scorer ])
+		train_score_plt, = plt.plot(range(1,30),scores_max_depth[train_df.set_name + '_' + scorer])
+		test_score_plt, = plt.plot(range(1,30),scores_max_depth[test_df.set_name + '_' + scorer ])
+		plt.legend([cv_score_plt, train_score_plt,test_score_plt],['Mean value from cross validation','On Training set','On Testing set'],loc='lower right')
+		plt.savefig('plots/tree' + '_' + scorer + '_en_funcion_de_'+'max_depth' + '_vs_tesing_set.pdf')
+		plt.close()

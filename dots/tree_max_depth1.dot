@@ -1,0 +1,8 @@
+digraph Tree {
+node [shape=box] ;
+0 [label="content_type <= 12.5\ngini = 0.5\nsamples = 54000\nvalue = [27000, 27000]\nclass = spam"] ;
+1 [label="gini = 0.2259\nsamples = 24686\nvalue = [3205, 21481]\nclass = ham"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="gini = 0.3057\nsamples = 29314\nvalue = [23795, 5519]\nclass = spam"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+}

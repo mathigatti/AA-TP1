@@ -1,0 +1,16 @@
+digraph Tree {
+node [shape=box] ;
+0 [label="content_type <= 12.5\ngini = 0.5\nsamples = 54000\nvalue = [27000, 27000]\nclass = spam"] ;
+1 [label="has_html <= 0.5\ngini = 0.2259\nsamples = 24686\nvalue = [3205, 21481]\nclass = ham"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="gini = 0.4588\nsamples = 8513\nvalue = [3034, 5479]\nclass = ham"] ;
+1 -> 2 ;
+3 [label="gini = 0.0209\nsamples = 16173\nvalue = [171, 16002]\nclass = ham"] ;
+1 -> 3 ;
+4 [label="recipient_count <= 1.5\ngini = 0.3057\nsamples = 29314\nvalue = [23795, 5519]\nclass = spam"] ;
+0 -> 4 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+5 [label="gini = 0.4979\nsamples = 10647\nvalue = [5665, 4982]\nclass = spam"] ;
+4 -> 5 ;
+6 [label="gini = 0.0559\nsamples = 18667\nvalue = [18130, 537]\nclass = spam"] ;
+4 -> 6 ;
+}

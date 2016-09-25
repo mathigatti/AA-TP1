@@ -23,11 +23,8 @@ def word_counter(raw_mail_body,word_count):
 		
 	for word in raw_mail_body.split():
 		try:
-			if validString(word):
-				if word in word_count:
-					word_count[word] += 1
-				else:
-					word_count[word] = 1
+			if validString(word) and spell_checker.check(word):
+				word_count[word] += 1
 		except:
 			pass
 
@@ -40,15 +37,12 @@ def toString(dictJSON):
 #Cuento palabras calcular frecuencia de palabras por clase
 if __name__ == '__main__':
 	spell_checker = SpellChecker("en_US",filters=[EmailFilter,URLFilter])
-	if False and exists('./jsons/mail_training_set.json') and isfile('./jsons/mail_training_set.json'):
+	if exists('./jsons/mail_training_set.json') and isfile('./jsons/mail_training_set.json'):
 	    df = pd.read_json('./jsons/mail_training_set.json')
 	else:
 	    ham_txt= json.load(open('./jsons/training_ham.json'))
 	    spam_txt= json.load(open('./jsons/training_spam.json'))
-	    ham2_txt= json.load(open('./jsons/testing/testing_ham.json'))
-	    spam2_txt= json.load(open('./jsons/testing/testing_spam.json'))
-	    df = pd.DataFrame(spam_txt+spam2_txt+ham_txt+ham2_txt, columns=['raw_mail_body'])
-	df['class'] = ['spam' for _ in range(len(spam_txt)+len(spam2_txt))]+['ham' for _ in range(len(ham_txt)+len(ham2_txt))]
+	    df = pd.DataFrame(spam_txt+ham_txt, columns=['raw_mail_body'])
 
 	df.spam_count = len(df[df['class'] == 'spam' ])
 	df.ham_count = len(df[df['class'] == 'ham' ])
@@ -61,7 +55,9 @@ if __name__ == '__main__':
 	map(lambda txt: word_counter(txt,word_count_spam),df[df['class']=='spam']['raw_mail_body'])
 	word_freq_spam = {k: v / float(df.spam_count) for k, v in word_count_spam.iteritems()}
 
+
 	#HAM Words - dict con las diferencias en cantidad de apariciones en ham y spam. Al final me quedare con las primeras y ultimas mil
+	print sorted(word_freq_spam.items(), key=lambda x: x[1])[-50:]
 	for k, v in word_freq_ham.iteritems():
 	    if word_freq_spam.get(k,None) is not None:
 	        word_freq_ham[k] = abs(v -  word_freq_spam[k])
@@ -71,6 +67,7 @@ if __name__ == '__main__':
 	for k, v in word_freq_spam.iteritems():
 	    word_freq_ham[k] = v
 
-	frequent_words  = sorted(word_freq_spam.items(), key=lambda x: x[1])
+	frequent_words  =  {k: v for k, v in word_freq_ham.items() if v > 2}.keys()
+
 	with open('jsons/frequent.json', 'w') as fp:
 	    json.dump(frequent_words, fp)
