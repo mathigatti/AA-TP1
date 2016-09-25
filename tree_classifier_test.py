@@ -71,5 +71,5 @@ if __name__ == '__main__':
 		train_score_plt, = plt.plot(range(1,30),scores_max_depth[train_df.set_name + '_' + scorer])
 		test_score_plt, = plt.plot(range(1,30),scores_max_depth[test_df.set_name + '_' + scorer ])
 		plt.legend([cv_score_plt, train_score_plt,test_score_plt],['Mean value from cross validation','On Training set','On Testing set'],loc='lower right')
-		plt.savefig('plots/tree' + '_' + scorer + '_en_funcion_de_'+'max_depth' + '_vs_tesing_set.pdf')
+		plt.savefig('plots/tree' + '_' + scorer + '_en_funcion_de_'+'max_depth' + '_vs_testing_set.pdf')
 		plt.close()
