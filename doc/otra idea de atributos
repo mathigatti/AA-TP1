@@ -1,0 +1,9 @@
+
+Paper de atributos  http://ir.lib.uwo.ca/cgi/viewcontent.cgi?article=3753&context=etd
+ver capitulo 7. pág 73 a pág 79
+pequeño comentario: 
+A partir de la pág 75 define tres grupos de atributos: Tradicionales, de Texto y de Legibilidad. Habiendo subgrupos dentro de los ultimos dos. 
+ - Dentro de los Tradicionales hace algo distinto a que hicieron. En vez de definir cierta palabra spam como un atributo particular, arma un diccionario de palabras spam, y define un solo atributo como el número de de veces que aparecen palabras de ese diccionario.
+- Para los de Texto usa un API así que no creo que se pueda usar
+- En los de legibilidad hay un par que parecen piolas para usar
+
