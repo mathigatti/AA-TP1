@@ -4,13 +4,17 @@ import json
 import numpy as np
 import pandas as pd
 from sklearn import tree, svm
+from sklearn.svm import LinearSVC
 from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
 from sklearn.neighbors import NearestNeighbors
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.decomposition import PCA
 from sklearn.metrics import roc_auc_score, recall_score, precision_score, fbeta_score, make_scorer
 from sklearn.cross_validation import cross_val_score, train_test_split
 from sklearn.externals.six import StringIO
+from sklearn.feature_selection import SelectFromModel, SelectKBest, chi2
 from IPython.display import Image 
 import pydotplus as pydot
 from mail_attributes import *
@@ -50,46 +54,89 @@ if __name__ == '__main__':
 
     # Preparo data para clasificar
     X = df[df.attributes].values
+
     y = df['class']
 
     # True = Spam, False = Ham
     yBool = booleanizar(y)
-
     # Elijo mi clasificador.
     dtc0 = DecisionTreeClassifier(class_weight='balanced')
-    dtc1 = DecisionTreeClassifier(class_weight='balanced', criterion='entropy', max_depth=2)
-    dtc2 = DecisionTreeClassifier(class_weight='balanced', max_depth=2)
-    dtc3 = DecisionTreeClassifier(criterion='entropy', max_depth=2)
-    dtc4 = DecisionTreeClassifier(max_depth=2)
+    dtc1 = DecisionTreeClassifier(class_weight='balanced', criterion='entropy', max_depth=6)
+    dtc2 = DecisionTreeClassifier(class_weight='balanced', max_depth=6)
+    dtc3 = DecisionTreeClassifier(criterion='entropy', max_depth=6)
+    dtc4 = DecisionTreeClassifier(max_depth=6)
 
     gnb = GaussianNB()
     bnb = BernoulliNB()
     mnb = MultinomialNB()
     svm = svm.SVC()
-    rfc = RandomForestClassifier(max_depth=3)
+    rfc = RandomForestClassifier(max_depth=6)
 
     # Ejecuto el clasificador entrenando con un esquema de cross validation
     # de 10 folds.
 
-    cross_validation_f05('Decision Tree 0', dtc0, X, yBool)
+    # cross_validation_f05('Decision Tree 0', dtc0, X, yBool)
 
-    cross_validation_f05('Decision Tree 1', dtc1, X, yBool)
+    # cross_validation_f05('Decision Tree 1', dtc1, X, yBool)
 
-    cross_validation_f05('Decision Tree 2', dtc2, X, yBool)
+    # cross_validation_f05('Decision Tree 2', dtc2, X, yBool)
 
-    cross_validation_f05('Decision Tree 3', dtc3, X, yBool)
+    # cross_validation_f05('Decision Tree 3', dtc3, X, yBool)
 
-    cross_validation_f05('Decision Tree 4', dtc4, X, yBool)
+    # cross_validation_f05('Decision Tree 4', dtc4, X, yBool)
 
-    cross_validation_f05('Gaussian Naive Bayes', gnb, X, yBool)
+    # cross_validation_f05('Gaussian Naive Bayes', gnb, X, yBool)
 
-    cross_validation_f05('Bernoulli Naive Bayes', bnb, X, yBool)
+    # cross_validation_f05('Bernoulli Naive Bayes', bnb, X, yBool)
 
-    cross_validation_f05('Multinomial Naive Bayes', mnb,X,yBool)
+    # cross_validation_f05('Multinomial Naive Bayes', mnb,X,yBool)
 
-    cross_validation_f05('Random Forest', rfc,X,yBool)
+    # cross_validation_f05('Random Forest', rfc,X,yBool)
 
-#   Faltan SVM, KNN y Arbol de Decision con Pruning como minimo para probar
+    #Pruebo sacando features
+    print 'Dimensiones actuales de X: ' + str(X.shape)
+
+    X_new = SelectKBest(chi2, k=100).fit_transform(X, y)
+
+    print X_new.shape
+
+    cross_validation_f05('Decision Tree con 100 Features', dtc1, X_new, yBool)
+
+    clf = ExtraTreesClassifier()
+    clf = clf.fit(X, y)
+    clf.feature_importances_  
+    model = SelectFromModel(clf, prefit=True)
+    X_new = model.transform(X)
+
+    print X_new.shape
+
+    cross_validation_f05('Decision Tree con Tree Based Feature Selection', dtc1, X_new, yBool)
+
+    lsvc = LinearSVC(C=0.01, penalty="l1", dual=False).fit(X, y)
+    model = SelectFromModel(lsvc, prefit=True)
+    X_new = model.transform(X)
+
+    print X_new.shape
+
+    cross_validation_f05('Decision Tree con L1 Feature Selection', dtc1, X_new, yBool)
+
+    pca = PCA()
+    # Le paso a PCA el nuevo X con los parametros inutiles ya extraidos
+    pca.fit(X_new)
+    X_new = pca.transform(X_new)
+    print X_new.shape
+    cross_validation_f05('Decision Tree con PCA Feature Selection', dtc1, X_new, yBool)
+
+# Ejemplo de uso de pipeline para hacer la extraccion de features y corrida del clasificador todo de una 
+
+# clf = Pipeline([
+#   ('feature_selection', SelectFromModel(LinearSVC(penalty="l1"))),
+#   ('classification', RandomForestClassifier())
+# ])
+# clf.fit(X, y)
+
+
+#   Faltan SVM, KNN
 
     if save_training_test == True:
         df[['class','mail_headers_dict','raw_mail_body']].to_json('jsons/mail_training_set.json')

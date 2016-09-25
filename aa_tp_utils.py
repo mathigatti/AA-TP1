@@ -5,6 +5,9 @@ from frequents import palabrasFrecuentes
 from sklearn.metrics import roc_auc_score, recall_score, precision_score, fbeta_score, make_scorer, accuracy_score
 from sklearn.cross_validation import cross_val_score, train_test_split
 from frequents import palabrasFrecuentes,esta
+from frequents2 import palabrasFrecuentes2
+from frequents3 import palabrasFrecuentes3
+import numpy as np
 
 def open_set(path,set_name):
     if exists(path) and isfile(path):
@@ -20,7 +23,7 @@ def open_set(path,set_name):
 #Procesa tolas las funciones que se llaman ma_*
 # El nombre del atributo es lo que sigue a ma_
 def process_attributes(df):
-    add_attribute_from_series(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
+    # add_attribute_from_series(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
     add_attribute_from_series(df,'raw_mail_len',len,'raw_mail_body')
     add_attribute_from_series(df,'raw_body_count_spaces',ma_count_spaces,'raw_mail_body')
     add_attribute_from_series(df,'has_dollar',ma_has_dollar,'raw_mail_body')
@@ -48,7 +51,11 @@ def process_attributes(df):
         print word
         add_attribute_from_series(df,word,lambda raw_mail_body: ma_word_count(word,raw_mail_body),'raw_mail_body')
     for palabraFrecuente in palabrasFrecuentes:
-         add_attribute_from_series(df,palabraFrecuente,lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
+         add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
+    for palabraFrecuente in palabrasFrecuentes2:
+         add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
+    for palabraFrecuente in palabrasFrecuentes3:
+         add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
 
 def booleanizar(y):
     yBool = []

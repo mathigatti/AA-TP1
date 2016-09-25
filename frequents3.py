@@ -1,4 +1,4 @@
-palabrasFrecuentes = ['confidential',
+palabrasFrecuentes3 = ['confidential',
  'Steve',
  # 'cost',
  # 'December',

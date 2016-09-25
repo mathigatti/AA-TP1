@@ -1,6 +1,6 @@
  # Lista de palabras, sin codigo html. No parece tener una performance superior sobre los datos de entrenamiento.
 
-palabrasFrecuentes = ['chongqing',
+palabrasFrecuentes2 = ['chongqing',
  'christianhealthcenter',
  '2oo2',
  '1930,',
