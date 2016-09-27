@@ -1,0 +1,36 @@
+\subsection{Atributos de Correo}
+
+\begin{itemize}
+\item Los correos de spam suelen ser enviados a un único destinatario, para capturar esta característica se extraen 3 atributos del encabezado del correo: \textit{recipient\_count}, \textit{has\_cc} y \textit{has\_cc} para extraer cantidad de destinatarios del correo, si hay destinatarios en copia y si hay destinatarios en copia oculta respectivamente.
+\item \textit{headers\_count} cantidad de encabezados.
+\item \textit{mailer} Software utilizido para envió de correo. 
+\item \textit{has\_body} Nos dice si el correo tiene cuerpo o si solo consta de encabezados
+\item \textit{content\_type} Tipo del contenido del cuerpo de correo. Por ejemplo: text/plain, text/html, multipart/related, multipart/alternative,etc. 
+\item \textit{content\_transfer\_encoding} la codificación utilizada para la transferencia del correo
+\item \textit{is\_mulipart} Nos dice si el cuerpo consta de varias partes
+\item \textit{subject\_length} Largo del titulo  del correo
+\item \textit{raw\_mail\_len} Largo del cuerpo del mensaje. 
+\item \textit{raw\_body\_count\_spaces} Cantidad de espacios en cuerpo de correo
+\item \textit{has\_dollar} Nos dice si aparece el símbolo \$ en el cuerpo del correo. 
+\item \textit{has\_link} Indica presencia de link http dentro del cuerpo del correo. 
+\item \textit{has\_html} Indica presencia de html dentro del cuerpo del correo. 
+\item \textit{has\_attachement} Indica la presencia de archivos adjuntos analizando content-type de las partes de correos con múltiples partes. Se consideran archivos adjuntos  a las partes que no sean del tipo text/*. 
+\item \textit{uppercase\_count} Frecuencia de caracteres de letras mayúsculas en cuerpo de correo.  
+\item \textit{has\_non\_english\_chars} Indica presencia de caracteres de idiomas diferentes al ingles dentro del cuerpo. 
+\item \textit{spaces\_over\_len} frecuencia de espacio en cuerpo de correo
+\item En correos de tipo ham se puede observar alta frecuencia de conjunciones y artículos. Por lo que tenemos atributos por para calcular la frecuencia de los mismos. Por ejemplo: a, and, for, of, to, in, the . La frecuencia se mide por separado a cada uno de los listados. La lista surgió de analizar palabras mas frecuentes en correos de ham en comparación con correos de spam. 
+\item \textit{parts\_count} Cantidad de partes en correo de múltiples partes. 
+\item \textit{spell\_error\_count} Cantidad de errores ortográficos en cuerpo de correo.
+\item Por último analizamos base de prueba de  correos de spam, para extraer las 100 palabras mas utilizadas.  A partir de cada palabra se genera un atributos que nos indica la presencia o no de la misma. 
+\end{itemize}
+	El atributo content\_type es el atributo con mas ganancia de información, posicionando en la raíz de los clasificadores de arboles cuando no se limitaba la selección de atributos a un subconjunto aleatorio de atributos. 
+	El atributo \textit{headers\_count} no resulto ser muy efectivo, la cantidad de encabezados suele ser uniforme entre correos spam y ham,variando por la inclusión de encabezados cc y bcc que ya son capturados por otros atributos. 
+
+
+
+
+
+
+
+
+
