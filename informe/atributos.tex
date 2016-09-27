@@ -1,4 +1,4 @@
-\subsection{Atributos de Correo}
+
 
 \begin{enumerate}
 
@@ -31,10 +31,8 @@
 	El atributo \textit{headers\_count} no resulto ser muy efectivo, la cantidad de encabezados suele ser uniforme entre correos spam y ham,variando por la inclusión de encabezados cc y bcc que ya son capturados por otros atributos. 
 
 
-\item El conjunto original de mails fue dividido para tener por un lado un set de entrenamiento con el cual trabajar y un set de testing para probar al final si realmente nuestros clasificadores generalizaban bien y podian clasificar correctamente instancias nuevas. Al entrenar los árboles de decisión surgió la necesidad de medir su performance de alguna manera, para el dominio del problema en particular no pareció valido utilizar F0.5 como unidad de medida, ya que la precisión es lo que tiene mayor peso en un filtro de spam debido a que se busca evitar que el clasificador catalogue como spam un mail importante.
+\item El conjunto original de mails fue dividido para tener por un lado un set de entrenamiento con el cual trabajar y un set de testing para probar al final si realmente nuestros clasificadores generalizaban bien y podían clasificar correctamente instancias nuevas. Al entrenar los árboles de decisión surgió la necesidad de medir su performance de alguna manera, para el dominio del problema en particular no pareció valido utilizar F0.5 como unidad de medida, ya que la precisión es lo que tiene mayor peso en un filtro de spam debido a que se busca evitar que el clasificador catalogue como spam un mail importante.
 
-\item Experimentamos con distintos hiperparametros utilizando al tecnica de grid search. Por limitaciones de computo no pudimos hacer una busqueda demasiado exhaustiva, de todas maneras logramos obtener resultados considerablemente mejores que los que hubieramos teniamos al principio cuando probamos con los valores seteados por defecto en los clasificadores.
-
----DATOS/TABLA DE RESULTADOS---
+\item Experimentamos con distintos hiper-parámetros utilizando al técnica de grid search. Por limitaciones de computo no pudimos hacer una búsqueda demasiado exhaustiva, de todas maneras logramos obtener resultados considerablemente mejores que los que hubiéramos teníamos al principio cuando probamos con los valores seteados por defecto en los clasificadores.
 
 \end{enumerate}
