@@ -162,7 +162,7 @@ def ma_spell_error_count(mail):
 
 # 13) is multipart
 def ma_is_mulipart(headers):
-    content_type = ma_categorical_content_type(headers) 
+    content_type = ma_content_type(headers) 
     found = re.match(r'multipart.*',content_type)
     if found:
         return 1
