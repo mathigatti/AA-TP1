@@ -5,6 +5,29 @@ from collections import Counter,defaultdict
 from enchant.checker import SpellChecker
 from enchant.tokenize import EmailFilter, URLFilter
 from mail_utils import *
+from nltk.corpus import words
+from nltk import word_tokenize,pos_tag
+
+global english_dict
+
+english_dict = set(words.words())
+
+def ma_spell_error_count(raw_mail_body):
+    global english_dict
+    raw_mail_body = raw_mail_body.lower()
+    if ma_has_html(raw_mail_body):
+        raw_mail_body = re.sub(r'content-type.*?LINEFEED','',raw_mail_body.replace('\n','LINEFEED').replace('\r',''))
+        raw_mail_body = re.sub(r'</?.*?>','',raw_mail_body.replace('LINEFEED',' ').replace('\r',''))
+        raw_mail_body = re.sub(r'-|\?|\.|&|#|\$|%|_|!|\"|\'|,|=|\)|\(|}|{|:',' ',raw_mail_body)
+    count = 0
+    for word in raw_mail_body.split():
+        try:
+            if word not in english_dict:
+                count += 1
+        except:
+            print 'exception'
+    return count
+
 
 ### helper functions
 def get_new_line_code(text):
@@ -211,13 +234,10 @@ def ma_spaces_over_len(raw_mail_body):
 # 23) lexical diversity
 def ma_lexical_diversity(raw_mail_body):
     print raw_mail_body
-    raw_mail_body = raw_mail_body.lower()
     if ma_has_html(raw_mail_body):
-        print 'It has html'
-        raw_mail_body = re.sub(r'content-type.*LINEFEED','',raw_mail_body.replace('\n','LINEFEED').replace('\r',''))
-        print raw_mail_body
-        raw_mail_body = re.sub(r'</?.*>','',raw_mail_body.replace('LINEFEED','').replace('\r','').replace(' ','SPACE'))
-        print raw_mail_body
+        raw_mail_body = re.sub(r'content-type.*?LINEFEED','',raw_mail_body.replace('\n','LINEFEED').replace('\r',''))
+        raw_mail_body = re.sub(r'</?.*?>','',raw_mail_body.replace('LINEFEED',' ').replace('\r',''))
+        raw_mail_body = re.sub(r'-|\?|\.|&|#|\$|%|_|!|\"|\'|,|=|\)|\(|}|{|:',' ',raw_mail_body)
     if  ma_has_body(raw_mail_body) == 0:
         return 0
     return len(set(raw_mail_body).split(' ')) / len(raw_mail_body)
