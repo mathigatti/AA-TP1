@@ -1,2 +1,16 @@
-Utilizamos distintas técnicas de reduccion de la dimensionalidad PCA, Linear SVC con penalidad L1, ExtraTreesClassifier y simplemente seleccionar los 100 mejores.
+Utilizamos distintas técnicas de reduccion de la dimensionalidad, principalmente porque teniamos una gran cantidad de features los cuales teniamos dudas de que fueran realmente útiles. Las principales dudas estaban en las 1000 palabras que habiamos escogido a partir del score que definimos previamente. Para descartar atributos utilizamos tres selectores y luego calculamos la unión entre esos tres conjuntos resultando en 300 atributos al final en lugar de los 1490 con los que empezamos.
+\begin{itemize}
 
+\item SVC con penalidad norma 1
+
+\item A partir de un arbol de desición, entrenamos a este con los valores de entrenamiento y vemos los atributos que fueron utilizados primero por este.
+
+\item A partir de seleccionar los 100 valores con puntaje mas alto, utilizando para puntuar la función Chi\^2 la cual mide la independencia entre un atributo y una clase. Mientras mas dependa el valor de la clase del atributo (Algo deseable) mayor será el puntaje.
+
+\end{itemize}
+
+\subsection{Resultados}
+
+Durante esta etapa descartamos algunos atributos que a priori no parecían ser tan malos, por ejemplo la longitud de palabra promedio, contar espacios o la cantidad de palabras. También fue interesante ver como palabras que quizas uno relacionaria fuertemente con el spam como "cheaper" fueron descartadas y en su lugar tuviero mejores resultados algunos caracteres especiales como '&', demostrando quizas las limitaciones que tenemos para reconocer atributos importantes y la utilidad herramientas que realicen estos calculos por nosotros.
+
+Las técnicas utilizadas fueron basadas principalmente en los recursos encontrados en http://scikit-learn.org/stable/modules/feature_selection.html

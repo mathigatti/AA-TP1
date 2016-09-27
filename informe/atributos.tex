@@ -25,14 +25,16 @@
 \item En correos de tipo ham se puede observar alta frecuencia de conjunciones y artículos. Por lo que tenemos atributos por para calcular la frecuencia de los mismos. Por ejemplo: a, and, for, of, to, in, the . La frecuencia se mide por separado a cada uno de los listados. La lista surgió de analizar palabras mas frecuentes en correos de ham en comparación con correos de spam. 
 \item \textit{parts\_count} Cantidad de partes en correo de múltiples partes. 
 \item \textit{spell\_error\_count} Cantidad de errores ortográficos en cuerpo de correo.
-\item Por último analizamos base de prueba de  correos de spam, para extraer las 100 palabras mas utilizadas.  A partir de cada palabra se genera un atributos que nos indica la presencia o no de la misma. 
+\item Por último analizamos el set de entrenamiento de  correos de spam y ham en busca de palabras de interes, principalmente las que aparecieran mucho en un tipo de mail pero no en otro. Por cada palabra normalizabamos su cantidad de apariciones por sobre el total de palabras y calculamos la diferencia entre el resultado obtenido en ham y spam. A partir de estos valores nos quedamos con las 2000 palabras con mayor score. 
+
 \end{itemize}
+
 	El atributo content\_type es el atributo con mas ganancia de información, posicionando en la raíz de los clasificadores de arboles cuando no se limitaba la selección de atributos a un subconjunto aleatorio de atributos. 
 	El atributo \textit{headers\_count} no resulto ser muy efectivo, la cantidad de encabezados suele ser uniforme entre correos spam y ham,variando por la inclusión de encabezados cc y bcc que ya son capturados por otros atributos. 
 
 
 \item El conjunto original de mails fue dividido para tener por un lado un set de entrenamiento con el cual trabajar y un set de testing para probar al final si realmente nuestros clasificadores generalizaban bien y podían clasificar correctamente instancias nuevas. Al entrenar los árboles de decisión surgió la necesidad de medir su performance de alguna manera, para el dominio del problema en particular no pareció valido utilizar F0.5 como unidad de medida, ya que la precisión es lo que tiene mayor peso en un filtro de spam debido a que se busca evitar que el clasificador catalogue como spam un mail importante.
 
-\item Experimentamos con distintos hiper-parámetros utilizando al técnica de grid search. Por limitaciones de computo no pudimos hacer una búsqueda demasiado exhaustiva, de todas maneras logramos obtener resultados considerablemente mejores que los que hubiéramos teníamos al principio cuando probamos con los valores seteados por defecto en los clasificadores.
+\item Experimentamos con distintos hiper-parámetros utilizando al técnica de grid search. Por limitaciones de computo no pudimos hacer una búsqueda demasiado exhaustiva, de todas maneras logramos obtener resultados considerablemente mejores que los obtenidos al probar con los valores seteados por defecto en los clasificadores. Se discutirá esto en mayor profundidad en la sección de resultados.
 
 \end{enumerate}
