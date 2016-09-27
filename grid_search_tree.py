@@ -51,12 +51,13 @@ print grid_search.best_estimator_
 print grid_search.best_score_
 
 print 'Testing performance in Testing Data'
-test_data_frame = open_set('jsons/mail_testing_set.json','test_set')
 
+test_data_frame = open_set('jsons/mail_testing_set.json','test_set')
 test_data_frame.X = test_data_frame[test_data_frame.attributes].values
 test_data_frame.y = test_data_frame['class']
 test_data_frame.y_binarized = preprocessing.label_binarize(test_data_frame.y,classes=['ham','spam'])
 test_data_frame.y_binarized = np.array([number[0] for number in test_data_frame.y_binarized])
-process_attributes(test_data_frame.X)
+process_attributes(test_data_frame)
+
 y_pred = grid_search.predict(test_data_frame.X)
 print 'fbeta 0.5 on testing = ',fbeta_score(test_data_frame.y_binarized,y_pred,0.5)
