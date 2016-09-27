@@ -61,10 +61,10 @@ if __name__ == '__main__':
     yBool = booleanizar(y)
     # Elijo mi clasificador.
     dtc0 = DecisionTreeClassifier(class_weight='balanced')
-    dtc1 = DecisionTreeClassifier(class_weight='balanced', criterion='entropy', max_depth=6)
-    dtc2 = DecisionTreeClassifier(class_weight='balanced', max_depth=6)
-    dtc3 = DecisionTreeClassifier(criterion='entropy', max_depth=6)
-    dtc4 = DecisionTreeClassifier(max_depth=6)
+    dtc1 = DecisionTreeClassifier(class_weight='balanced', criterion='entropy', max_depth=14)
+    dtc2 = DecisionTreeClassifier(class_weight='balanced', max_depth=9)
+    dtc3 = DecisionTreeClassifier(criterion='entropy', max_depth=15)
+    dtc4 = DecisionTreeClassifier(max_depth=15)
 
     gnb = GaussianNB()
     bnb = BernoulliNB()
