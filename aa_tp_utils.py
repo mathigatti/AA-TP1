@@ -8,6 +8,7 @@ from frequents import palabrasFrecuentes,esta
 from frequents2 import palabrasFrecuentes2
 from frequents3 import palabrasFrecuentes3
 import numpy as np
+from frequent_spam_words import *
 
 def open_set(path,set_name):
     if exists(path) and isfile(path):
@@ -33,7 +34,7 @@ def process_attributes(df):
     add_attribute_from_series(df,'has_bcc',ma_has_bcc,'mail_headers_dict')
     add_attribute_from_series(df,'has_body',ma_has_body,'raw_mail_body')
     add_attribute_from_series(df,'headers_count',ma_headers_count,'mail_headers_dict')
-    add_attribute_from_series(df,'content_type',ma_categorical_content_type,'mail_headers_dict',encode=True)
+    add_attribute_from_series(df,'content_type',ma_content_type,'mail_headers_dict',encode=True)
     add_attribute_from_series(df,'recipient_count',ma_recipient_count,'mail_headers_dict')
     add_attribute_from_series(df,'is_mulipart',ma_is_mulipart,'mail_headers_dict')
     add_attribute_from_series(df,'uppercase_count',ma_uppercase_count,'raw_mail_body')
@@ -42,6 +43,9 @@ def process_attributes(df):
     add_attribute_from_series(df,'subject_length',ma_subject_length,'mail_headers_dict')
     add_attribute_from_series(df,'content_transfer_encoding,',ma_content_transfer_encoding,'mail_headers_dict',encode=True)
     add_attribute_from_series(df,'spaces_over_len',ma_spaces_over_len,'raw_mail_body')
+    #add_attribute_from_series(df,'word_count',ma_word_count,'raw_mail_body')
+    #add_attribute_from_series(df,'avg_word_len',ma_avg_word_len,'raw_mail_body')
+    
 
     #df['parts_count'] = df.apply(lambda row:ma_parts_count(row['mail_headers_dict'],row['raw_mail_body']),axis=1)
     add_attribute_from_df(df,'parts_count',lambda row:ma_parts_count(row['mail_headers_dict'],row['raw_mail_body']))
@@ -50,12 +54,14 @@ def process_attributes(df):
     for word in ['a', 'and', 'for', 'of', 'to', 'in', 'the']:
         print word
         add_attribute_from_series(df,word,lambda raw_mail_body: ma_word_count(word,raw_mail_body),'raw_mail_body')
-    for palabraFrecuente in palabrasFrecuentes:
-         add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
-    for palabraFrecuente in palabrasFrecuentes2:
-         add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
-    for palabraFrecuente in palabrasFrecuentes3:
-         add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
+    for word in frequentSpamWords:
+        add_attribute_from_series(df,word,lambda raw_mail_body: ma_has_word(word,raw_mail_body),'raw_mail_body')
+    #for palabraFrecuente in palabrasFrecuentes:
+    #    add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
+    # for palabraFrecuente in palabrasFrecuentes2:
+    #     add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
+    # for palabraFrecuente in palabrasFrecuentes3:
+    #     add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
 
 def booleanizar(y):
     yBool = []
@@ -123,6 +129,7 @@ def accuracy(y_true,y_pred):
 
 def cross_validation_f05(nombre,metodo,x,y):
     f05_score = make_scorer(fbeta_score, beta=0.5)
-    res = cross_val_score(metodo, x, y, scoring=f05_score, cv=10)
+    res = cross_val_score(metodo, x, y, scoring=f05_score, cv=10, n_jobs=2)
     print nombre + ': Mean and Standard Deviation'
     print(np.mean(res), np.std(res))
+    return np.mean(res)

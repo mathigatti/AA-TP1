@@ -101,16 +101,17 @@ def ma_has_bcc(headers):
 
 # 8) has Body
 def ma_has_body(mail):
-    if get_mail_body(mail) == '':
+    if mail == '':
         return 0
     else:
         return 1
+
 # 9) headers count
 def ma_headers_count(headers):
     return len(headers)
 
 # 10) content-type
-def ma_categorical_content_type(headers):
+def ma_content_type(headers):
     return headers.get('content-type','').split(';')[0].lower().strip().split(' ')[0]
 
 # 11) receipients_count
@@ -174,6 +175,7 @@ def ma_has_attachment(headers,raw_mail_body):
 def ma_word_count(word,raw_mail_body):
     return raw_mail_body.lower().count(' '+ word + ' '  )
 
+
 # 17) Uppercase count
 def ma_uppercase_count(raw_mail_body):
     return  sum(1 for c in raw_mail_body if c.isupper())
@@ -206,7 +208,23 @@ def ma_spaces_over_len(raw_mail_body):
     else:
         return 0
 
+# 23) lexical diversity
+def ma_lexical_diversity(raw_mail_body):
+    print raw_mail_body
+    raw_mail_body = raw_mail_body.lower()
+    if ma_has_html(raw_mail_body):
+        print 'It has html'
+        raw_mail_body = re.sub(r'content-type.*LINEFEED','',raw_mail_body.replace('\n','LINEFEED').replace('\r',''))
+        print raw_mail_body
+        raw_mail_body = re.sub(r'</?.*>','',raw_mail_body.replace('LINEFEED','').replace('\r','').replace(' ','SPACE'))
+        print raw_mail_body
+    if  ma_has_body(raw_mail_body) == 0:
+        return 0
+    return len(set(raw_mail_body).split(' ')) / len(raw_mail_body)
 
-
-
-
+# 24 ) has_word
+def ma_has_word(word,raw_mail_body):
+    if raw_mail_body.lower().find(word) >= 0:
+        return 1
+    else:
+        return 0

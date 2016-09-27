@@ -28,8 +28,8 @@ train_data_frame.y_binarized = np.array([number[0] for number in train_data_fram
 clf = DecisionTreeClassifier()
 param_grid = {'max_depth':range(9,15),
 		'max_features' : [None,'sqrt','log2'],
-		'min_samples_split' : [2, 16, 64, 512, 1024, 2048, 4096, 8192, 16384],
-		'min_samples_leaf' : [2, 16,  64, 512, 1024, 2048, 4096, 8192, 16384],
+		'min_samples_split' : [2, 64, 512, 2048, 4096, 8192],
+		'min_samples_leaf' : [2, 64, 512,  2048, 4096, 8192],
 		'criterion' : ['gini','entropy']
 		}
 f05_score = make_scorer(fbeta_score, beta=0.5)
@@ -57,6 +57,6 @@ test_data_frame.X = test_data_frame[test_data_frame.attributes].values
 test_data_frame.y = test_data_frame['class']
 test_data_frame.y_binarized = preprocessing.label_binarize(test_data_frame.y,classes=['ham','spam'])
 test_data_frame.y_binarized = np.array([number[0] for number in test_data_frame.y_binarized])
-
+process_attributes(test_data_frame.X)
 y_pred = grid_search.predict(test_data_frame.X)
 print 'fbeta 0.5 on testing = ',fbeta_score(test_data_frame.y_binarized,y_pred,0.5)
