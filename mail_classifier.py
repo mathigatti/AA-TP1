@@ -60,72 +60,60 @@ if __name__ == '__main__':
     # True = Spam, False = Ham
     yBool = booleanizar(y)
     # Elijo mi clasificador.
-    dtc0 = DecisionTreeClassifier(class_weight='balanced')
-    dtc1 = DecisionTreeClassifier(class_weight='balanced', criterion='entropy', max_depth=14)
-    dtc2 = DecisionTreeClassifier(class_weight='balanced', max_depth=9)
-    dtc3 = DecisionTreeClassifier(criterion='entropy', max_depth=15)
-    dtc4 = DecisionTreeClassifier(max_depth=15)
-
-    gnb = GaussianNB()
+    dtc = DecisionTreeClassifier(class_weight='balanced', criterion='entropy', max_depth=14)
+    rfc = RandomForestClassifier(class_weight='balanced', criterion='entropy', max_depth=14)
     bnb = BernoulliNB()
     mnb = MultinomialNB()
-    svm = svm.SVC()
-    rfc = RandomForestClassifier(max_depth=6)
+    knn = KNeighborsClassifier(n_neighbors=2, weights='uniform', leaf_size=20,algorithm='kd_tree', p=1)
 
     # Ejecuto el clasificador entrenando con un esquema de cross validation
     # de 10 folds.
 
-    # cross_validation_f05('Decision Tree 0', dtc0, X, yBool)
+    cross_validation_f05('Decision Tree', dtc, X, yBool)
 
-    # cross_validation_f05('Decision Tree 1', dtc1, X, yBool)
+    cross_validation_f05('Gaussian Naive Bayes', gnb, X, yBool)
 
-    # cross_validation_f05('Decision Tree 2', dtc2, X, yBool)
+    cross_validation_f05('Bernoulli Naive Bayes', bnb, X, yBool)
 
-    # cross_validation_f05('Decision Tree 3', dtc3, X, yBool)
+    cross_validation_f05('Multinomial Naive Bayes', mnb,X,yBool)
 
-    # cross_validation_f05('Decision Tree 4', dtc4, X, yBool)
+    cross_validation_f05('Random Forest', rfc,X,yBool)
 
-    # cross_validation_f05('Gaussian Naive Bayes', gnb, X, yBool)
-
-    # cross_validation_f05('Bernoulli Naive Bayes', bnb, X, yBool)
-
-    # cross_validation_f05('Multinomial Naive Bayes', mnb,X,yBool)
-
-    # cross_validation_f05('Random Forest', rfc,X,yBool)
+    cross_validation_f05('Random Forest', knn,X,yBool)
 
     #Pruebo sacando features
-    print 'Dimensiones actuales de X: ' + str(X.shape)
+    #print 'Dimensiones actuales de X: ' + str(X.shape)
 
-    X_new = SelectKBest(chi2, k=100).fit_transform(X, yBool)
+#    X_new = SelectKBest(chi2, k=100).fit_transform(X, yBool)
 
-    print X_new.shape
+#    print X_new.shape
 
-    cross_validation_f05('Decision Tree con 100 Features', dtc1, X_new, yBool)
+#    cross_validation_f05('Decision Tree con 100 Features', dtc1, X_new, yBool)
 
-    clf = ExtraTreesClassifier()
-    clf = clf.fit(X, yBool)
-    clf.feature_importances_  
-    model = SelectFromModel(clf, prefit=True)
-    X_new = model.transform(X)
+    # clf = ExtraTreesClassifier()
+    # clf = clf.fit(X, yBool)
+    # clf.feature_importances_  
+    # model = SelectFromModel(clf, prefit=True)
+    # X_new = model.transform(X)
 
-    print X_new.shape
+    # print X_new.shape
 
-    cross_validation_f05('Decision Tree con Tree Based Feature Selection', dtc1, X_new, yBool)
+    # cross_validation_f05('Decision Tree con Tree Based Feature Selection', dtc1, X_new, yBool)
 
-    lsvc = LinearSVC(C=0.01, penalty="l1", dual=False).fit(X, yBool)
-    model = SelectFromModel(lsvc, prefit=True)
-    X_new = model.transform(X)
+    # lsvc = LinearSVC(C=0.01, penalty="l1", dual=False).fit(X, yBool)
+    # model = SelectFromModel(lsvc, prefit=True)
+    # X_new = model.transform(X)
 
-    print X_new.shape
+    # print X_new.shape
 
-    cross_validation_f05('Decision Tree con L1 Feature Selection', dtc1, X_new, yBool)
+    # cross_validation_f05('Decision Tree con L1 Feature Selection', dtc1, X_new, yBool)
 
-    pca = PCA()
-    # Le paso a PCA el nuevo X con los parametros inutiles ya extraidos
-    pca.fit(X_new)
-    X_new = pca.transform(X_new)
-    print X_new.shape
-    cross_validation_f05('Decision Tree con PCA Feature Selection', dtc1, X_new, yBool)
+    # pca = PCA()
+    # # Le paso a PCA el nuevo X con los parametros inutiles ya extraidos
+    # pca.fit(X_new)
+    # X_new = pca.transform(X_new)
+    # print X_new.shape
+    # cross_validation_f05('Decision Tree con PCA Feature Selection', dtc1, X_new, yBool)
 
 # Ejemplo de uso de pipeline para hacer la extraccion de features y corrida del clasificador todo de una 
 

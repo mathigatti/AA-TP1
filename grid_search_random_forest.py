@@ -16,26 +16,25 @@ from mail_attributes import *
 from  aa_tp_utils import *
 from  sklearn.grid_search import GridSearchCV
 from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
 
 train_data_frame = open_set('jsons/mail_training_set.json','train_set')
 
 process_attributes(train_data_frame)
 train_data_frame.X = train_data_frame[train_data_frame.attributes].values
 train_data_frame.y = train_data_frame['class']
-train_data_frame.y_binarized = preprocessing.label_binarize(train_data_frame.y,classes=['ham','spam'])
-train_data_frame.y_binarized = np.array([number[0] for number in train_data_frame.y_binarized])
+yBool = booleanizar(train_data_frame.y)
+
 
 clf = RandomForestClassifier(max_depth=14,criterion='entropy')
-param_grid = {'max_features' : [None,'sqrt','log2'],
-
-		}
+param_grid = {'max_features' : ['sqrt','log2']}
 f05_score = make_scorer(fbeta_score, beta=0.5)
-grid_search = GridSearchCV(clf,param_grid=param_grid, scoring=f05_score,n_jobs=4,cv=5)
-grid_search.fit(train_data_frame.X, train_data_frame.y_binarized)
+grid_search = GridSearchCV(clf,param_grid=param_grid, scoring=f05_score,n_jobs=4,cv=5,verbose=1)
+grid_search.fit(train_data_frame.X, yBool)
 
 
 csv_file = open('./plots/cv_grid_search_forest_' + 'f05' + '.csv', "w")
-csv_file.write('mean_score,std dev score, kernel\n')
+csv_file.write('mean_score,std dev score, max_features\n')
 for test in grid_search.grid_scores_:
 	csv_file.write(str(np.mean(test[2]))+','+str(np.std(test[2])))
 	for value in test[0].itervalues():
@@ -53,9 +52,9 @@ test_data_frame = open_set('jsons/mail_testing_set.json','test_set')
 process_attributes(test_data_frame)
 test_data_frame.X = test_data_frame[test_data_frame.attributes].values
 test_data_frame.y = test_data_frame['class']
-test_data_frame.y_binarized = preprocessing.label_binarize(test_data_frame.y,classes=['ham','spam'])
+test_data_frame.yBool = booleanizar(test_data_frame.y)
 test_data_frame.y_binarized = np.array([number[0] for number in test_data_frame.y_binarized])
 
 
 y_pred = grid_search.predict(test_data_frame.X)
-print 'fbeta 0.5 on testing = ',fbeta_score(test_data_frame.y_binarized,y_pred,0.5)
+print 'fbeta 0.5 on testing = ',fbeta_score(test_data_frame.yBool,y_pred,0.5)
