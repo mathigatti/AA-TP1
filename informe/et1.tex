@@ -1,5 +1,9 @@
 \subsection{Atributos de Correo}
 
+\begin{enumerate}
+
+\item A continuación enumeramos los atributos que escogimos como potencialmente utiles y que luego implementamos para extraer automaticamente de los mails.
+
 \begin{itemize}
 \item Los correos de spam suelen ser enviados a un único destinatario, para capturar esta característica se extraen 3 atributos del encabezado del correo: \textit{recipient\_count}, \textit{has\_cc} y \textit{has\_cc} para extraer cantidad de destinatarios del correo, si hay destinatarios en copia y si hay destinatarios en copia oculta respectivamente.
 \item \textit{headers\_count} cantidad de encabezados.
@@ -27,10 +31,10 @@
 	El atributo \textit{headers\_count} no resulto ser muy efectivo, la cantidad de encabezados suele ser uniforme entre correos spam y ham,variando por la inclusión de encabezados cc y bcc que ya son capturados por otros atributos. 
 
 
+\item El conjunto original de mails fue dividido para tener por un lado un set de entrenamiento con el cual trabajar y un set de testing para probar al final si realmente nuestros clasificadores generalizaban bien y podian clasificar correctamente instancias nuevas. Al entrenar los árboles de decisión surgió la necesidad de medir su performance de alguna manera, para el dominio del problema en particular no pareció valido utilizar F0.5 como unidad de medida, ya que la precisión es lo que tiene mayor peso en un filtro de spam debido a que se busca evitar que el clasificador catalogue como spam un mail importante.
 
+\item Experimentamos con distintos hiperparametros utilizando al tecnica de grid search. Por limitaciones de computo no pudimos hacer una busqueda demasiado exhaustiva, de todas maneras logramos obtener resultados considerablemente mejores que los que hubieramos teniamos al principio cuando probamos con los valores seteados por defecto en los clasificadores.
 
+---DATOS/TABLA DE RESULTADOS---
 
-
-
-
-
+\end{enumerate}
