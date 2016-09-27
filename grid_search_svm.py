@@ -33,7 +33,7 @@ grid_search.fit(train_data_frame.X, train_data_frame.y_binarized)
 
 
 csv_file = open('./plots/cv_grid_search_tree' + 'f05' + '.csv', "w")
-csv_file.write('mean_score,std dev score, n_neighbors,weights, p, leaf_size, algorithm\n')
+csv_file.write('mean_score,std dev score, kernel\n')
 for test in grid_search.grid_scores_:
 	csv_file.write(str(np.mean(test[2]))+','+str(np.std(test[2])))
 	for value in test[0].itervalues():
