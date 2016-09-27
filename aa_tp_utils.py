@@ -129,7 +129,7 @@ def accuracy(y_true,y_pred):
 
 def cross_validation_f05(nombre,metodo,x,y):
     f05_score = make_scorer(fbeta_score, beta=0.5)
-    res = cross_val_score(metodo, x, y, scoring=f05_score, cv=10, n_jobs=2)
+    res = cross_val_score(metodo, x, y, scoring=f05_score, cv=10, n_jobs=3)
     print nombre + ': Mean and Standard Deviation'
     print(np.mean(res), np.std(res))
     return np.mean(res)
