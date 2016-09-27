@@ -1,12 +1,9 @@
 from mail_attributes import *
 from os.path import exists,isfile
 from sklearn import preprocessing
-from frequents import palabrasFrecuentes
 from sklearn.metrics import roc_auc_score, recall_score, precision_score, fbeta_score, make_scorer, accuracy_score
 from sklearn.cross_validation import cross_val_score, train_test_split
-from frequents import palabrasFrecuentes,esta
-from frequents2 import palabrasFrecuentes2
-from frequents3 import palabrasFrecuentes3
+from palabras import palabrasFrecuentes,esta
 import numpy as np
 from frequent_spam_words import *
 
@@ -24,15 +21,12 @@ def open_set(path,set_name):
 #Procesa tolas las funciones que se llaman ma_*
 # El nombre del atributo es lo que sigue a ma_
 def process_attributes(df):
-    # add_attribute_from_series(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
-    add_attribute_from_series(df,'raw_mail_len',len,'raw_mail_body')
-    add_attribute_from_series(df,'raw_body_count_spaces',ma_count_spaces,'raw_mail_body')
+    #add_attribute_from_series(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
     add_attribute_from_series(df,'has_dollar',ma_has_dollar,'raw_mail_body')
     add_attribute_from_series(df,'has_link',ma_has_link,'raw_mail_body')
     add_attribute_from_series(df,'has_html',ma_has_html,'raw_mail_body')
     add_attribute_from_series(df,'has_cc',ma_has_cc,'mail_headers_dict')
     add_attribute_from_series(df,'has_bcc',ma_has_bcc,'mail_headers_dict')
-    add_attribute_from_series(df,'has_body',ma_has_body,'raw_mail_body')
     add_attribute_from_series(df,'headers_count',ma_headers_count,'mail_headers_dict')
     add_attribute_from_series(df,'content_type',ma_content_type,'mail_headers_dict',encode=True)
     add_attribute_from_series(df,'recipient_count',ma_recipient_count,'mail_headers_dict')
@@ -45,23 +39,21 @@ def process_attributes(df):
     add_attribute_from_series(df,'spaces_over_len',ma_spaces_over_len,'raw_mail_body')
     #add_attribute_from_series(df,'word_count',ma_word_count,'raw_mail_body')
     #add_attribute_from_series(df,'avg_word_len',ma_avg_word_len,'raw_mail_body')
-    
+    #add_attribute_from_series(df,'has_body',ma_has_body,'raw_mail_body')
+    #add_attribute_from_series(df,'raw_mail_len',len,'raw_mail_body')
+    #add_attribute_from_series(df,'raw_body_count_spaces',ma_count_spaces,'raw_mail_body')
 
     #df['parts_count'] = df.apply(lambda row:ma_parts_count(row['mail_headers_dict'],row['raw_mail_body']),axis=1)
-    add_attribute_from_df(df,'parts_count',lambda row:ma_parts_count(row['mail_headers_dict'],row['raw_mail_body']))
-    add_attribute_from_df(df,'has_attachment',lambda row:ma_has_attachment(row['mail_headers_dict'],row['raw_mail_body']))
+    #add_attribute_from_df(df,'parts_count',lambda row:ma_parts_count(row['mail_headers_dict'],row['raw_mail_body']))
+    #add_attribute_from_df(df,'has_attachment',lambda row:ma_has_attachment(row['mail_headers_dict'],row['raw_mail_body']))
 
     for word in ['a', 'and', 'for', 'of', 'to', 'in', 'the']:
         print word
         add_attribute_from_series(df,word,lambda raw_mail_body: ma_word_count(word,raw_mail_body),'raw_mail_body')
     for word in frequentSpamWords:
         add_attribute_from_series(df,word,lambda raw_mail_body: ma_has_word(word,raw_mail_body),'raw_mail_body')
-    #for palabraFrecuente in palabrasFrecuentes:
-    #    add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
-    # for palabraFrecuente in palabrasFrecuentes2:
-    #     add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
-    # for palabraFrecuente in palabrasFrecuentes3:
-    #     add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
+    for palabraFrecuente in palabrasFrecuentes:
+        add_attribute_from_series(df,'esta_' + palabraFrecuente + '_?',lambda mail: esta(palabraFrecuente,mail),'raw_mail_body')    
 
 def booleanizar(y):
     yBool = []

@@ -96,14 +96,14 @@ if __name__ == '__main__':
     #Pruebo sacando features
     print 'Dimensiones actuales de X: ' + str(X.shape)
 
-    X_new = SelectKBest(chi2, k=100).fit_transform(X, y)
+    X_new = SelectKBest(chi2, k=100).fit_transform(X, yBool)
 
     print X_new.shape
 
     cross_validation_f05('Decision Tree con 100 Features', dtc1, X_new, yBool)
 
     clf = ExtraTreesClassifier()
-    clf = clf.fit(X, y)
+    clf = clf.fit(X, yBool)
     clf.feature_importances_  
     model = SelectFromModel(clf, prefit=True)
     X_new = model.transform(X)
@@ -112,7 +112,7 @@ if __name__ == '__main__':
 
     cross_validation_f05('Decision Tree con Tree Based Feature Selection', dtc1, X_new, yBool)
 
-    lsvc = LinearSVC(C=0.01, penalty="l1", dual=False).fit(X, y)
+    lsvc = LinearSVC(C=0.01, penalty="l1", dual=False).fit(X, yBool)
     model = SelectFromModel(lsvc, prefit=True)
     X_new = model.transform(X)
 
@@ -141,7 +141,7 @@ if __name__ == '__main__':
     if save_training_test == True:
         df[['class','mail_headers_dict','raw_mail_body']].to_json('jsons/mail_training_set.json')
 
-    dtc4.fit(X,y) 
+    dtc4.fit(X,yBool) 
     
     with open("mail_classifier.dot", 'w') as f:
         f = tree.export_graphviz(dtc4,feature_names=df.attributes,out_file=f)
