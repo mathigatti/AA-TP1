@@ -16,7 +16,7 @@ from sklearn.cross_validation import cross_val_score, train_test_split
 from sklearn.externals.six import StringIO
 from sklearn.feature_selection import SelectFromModel, SelectKBest, chi2
 from IPython.display import Image 
-import pydotplus as pydot
+#import pydotplus as pydot
 from mail_attributes import *
 from mail_utils import *
 from collections import Counter,defaultdict
