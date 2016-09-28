@@ -61,7 +61,7 @@ if __name__ == '__main__':
     yBool = booleanizar(y)
     # Elijo mi clasificador.
     dtc = DecisionTreeClassifier(class_weight='balanced', criterion='entropy', max_depth=14)
-    rfc = RandomForestClassifier(class_weight='balanced', criterion='entropy', max_depth=14)
+    rfc = RandomForestClassifier(class_weight='balanced', criterion='entropy', max_depth=14,max_features='sqrt',n_estimators=35)
     bnb = BernoulliNB()
     mnb = MultinomialNB()
     knn = KNeighborsClassifier(n_neighbors=2, weights='uniform', leaf_size=20,algorithm='kd_tree', p=1)
