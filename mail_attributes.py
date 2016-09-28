@@ -3,12 +3,12 @@ import re
 import pandas as pd
 from collections import Counter,defaultdict
 from mail_utils import *
-#from nltk.corpus import words
-#from nltk import word_tokenize,pos_tag
+from nltk.corpus import words
+from nltk import word_tokenize,pos_tag
 
-#global english_dict
+global english_dict
 
-#english_dict = set(words.words())
+english_dict = set(words.words())
 
 def ma_spell_error_count(raw_mail_body):
     global english_dict
@@ -149,14 +149,6 @@ def ma_recipient_count(headers):
        count += len(bcc.split(',')) 
     return count
 
-# 12) Spell Error count
-def ma_spell_error_count(mail):
-    spell_checker = SpellChecker("en_US",filters=[EmailFilter,URLFilter])
-    count = 0
-    spell_checker.set_text(mail)
-    for err in spell_checker:
-        count += 1
-    return count
 
 # 13) is multipart
 def ma_is_mulipart(headers):

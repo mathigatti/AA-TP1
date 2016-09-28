@@ -21,7 +21,7 @@ def open_set(path,set_name):
 #Procesa tolas las funciones que se llaman ma_*
 # El nombre del atributo es lo que sigue a ma_
 def process_attributes(df):
-    #add_attribute_from_series(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
+    add_attribute_from_series(df,'spell_error_count',lambda mail: ma_spell_error_count(mail),'raw_mail_body')
     add_attribute_from_series(df,'has_dollar',ma_has_dollar,'raw_mail_body')
     add_attribute_from_series(df,'has_link',ma_has_link,'raw_mail_body')
     add_attribute_from_series(df,'has_html',ma_has_html,'raw_mail_body')
