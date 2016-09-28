@@ -1,2 +1,14 @@
-
-Luego de experimentar con distintos parametros, clasificadores e hiperparametros terminamos escogiendo -COMPLETAR- con esta versión final de nuestro clasificador de Spam, logramos un f0.5 de -COMPLETAR- sobre el conjunto de testing. 
+Una vez seleccionados los mejores hiper-parámetros para cada modelo se procedió a probar los mismo clasificando los datos de testing separados al comienzo del trabajo.  Los resultados se muestran en la siguiente tabla. 
+\begin{center}
+    \begin{tabular}{ | l |  p{8cm} | l |}
+    \hline
+    \textbf{Modelo} & \textbf{Hiper-parámetros} & \textbf{f0.5} \\ \hline
+Decision Tree & Criterio de selección=entropy, altura máxima=14 & 0.68  \\ \hline
+ Random Forest & Criterio de selección=entropy, altura máxima=14,cantidad máxima de atributos=sqrt, cantidad de árboles=35 & 0.93 \\ \hline
+Gaussian Naive Bayes & N/A & 0.61 \\ \hline
+Multinomial Naive Bayes & fit\_prior=True, alpha=1.0 & 0.54 \\ \hline
+ Bernoulli Naive Bayes & fit\_prior=True, alpha=1.0 &  0.91 \\ \hline
+K Nearest Neighbors & Vecinos considerados = 2, Métrica distancia =  Manhattan &   0.61 \\
+    \hline
+    \end{tabular}
+\end{center}
