@@ -25,7 +25,7 @@ Este modelo tiene la ventaja de ser muy rápido pero presenta el problema de que
 \subsection{Naive Bayes}
 
 Para este clasificador tuvimos que elegir primero la distribución que asumiriamos que iba a tener $ P(x_i | y) $, las opciones que consideramos fueron una distribución Gaussiana, Binomial y Multinomial. La distribución que mejores resultados obtuvo fue la Binomial lo cual tiene sentido debido a que modela bien la gran cantidad de atributos binarios, quizas si estos tuvieran mas de dos resultados posibles la distribución Multinomial o la Gaussiana habrian sido mejores opciónes.
-Los hiperparametros que consideramos fueron 'alpha' y 'fit_prior', el primero suaviza la función de distribución de cada atributo y el segundo intenta ir mejorando la estimación de los atributos y las clases a priori, a medida que va analizando nuevas instancias.
+Los hiperparametros que consideramos fueron $alpha$ y $fit\_prior$ , el primero suaviza la función de distribución de cada atributo y el segundo intenta ir mejorando la estimación de los atributos y las clases a priori, a medida que va analizando nuevas instancias.
 
 
 \subsection{Suport Vector Machine}
