@@ -1,3 +1,5 @@
+\subsection{Descripción}
+
 Utilizamos distintas técnicas de reduccion de la dimensionalidad, principalmente porque teniamos una gran cantidad de features los cuales teniamos dudas de que fueran realmente útiles. Las principales dudas estaban en las 1000 palabras que habiamos escogido a partir del score que definimos previamente. Para descartar atributos utilizamos tres selectores y luego calculamos la unión entre esos tres conjuntos resultando en 300 atributos al final en lugar de los 1490 con los que empezamos.
 \begin{itemize}
 
@@ -11,6 +13,6 @@ Utilizamos distintas técnicas de reduccion de la dimensionalidad, principalment
 
 \subsection{Resultados}
 
-Durante esta etapa descartamos algunos atributos que a priori no parecían ser tan malos, por ejemplo la longitud de palabra promedio, contar espacios o la cantidad de palabras. También fue interesante ver como palabras que quizas uno relacionaria fuertemente con el spam como "cheaper" fueron descartadas y en su lugar tuviero mejores resultados algunos caracteres especiales como '&', demostrando quizas las limitaciones que tenemos para reconocer atributos importantes y la utilidad herramientas que realicen estos calculos por nosotros.
+Durante esta etapa descartamos algunos atributos que a priori no parecían ser tan malos, por ejemplo la longitud de palabra promedio, contar espacios o la cantidad de palabras. También fue interesante ver como palabras que quizas uno relacionaria fuertemente con el spam como "cheaper" fueron descartadas y en su lugar tuviero mejores resultados algunos caracteres especiales como \&, demostrando quizas las limitaciones que tenemos para reconocer atributos importantes y la utilidad herramientas que realicen estos calculos por nosotros.
 
-Las técnicas utilizadas fueron basadas principalmente en los recursos encontrados en http://scikit-learn.org/stable/modules/feature_selection.html
+Las técnicas utilizadas fueron basadas principalmente en los recursos encontrados en $http://scikit-learn.org/stable/modules/feature_selection.html$
