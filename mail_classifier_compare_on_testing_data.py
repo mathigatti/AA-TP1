@@ -44,7 +44,7 @@ test_data_frame.yBool = booleanizar(test_data_frame.y)
 # Elijo mi clasificador.
 dtc = DecisionTreeClassifier(class_weight='balanced', criterion='entropy', max_depth=14)
 rfc = RandomForestClassifier(class_weight='balanced', criterion='entropy', max_depth=14,max_features='sqrt',n_estimators=35)
-gnb = GaussianNB(fit_prior=True,alpha=1.0)
+gnb = GaussianNB()
 bnb = BernoulliNB(fit_prior=True,alpha=1.0)
 mnb = MultinomialNB(fit_prior=True,alpha=1.0)
 knn = KNeighborsClassifier(n_neighbors=2, weights='uniform', leaf_size=20,algorithm='kd_tree', p=1)
@@ -81,5 +81,3 @@ knn.fit(train_data_frame.X,train_data_frame.yBool)
 y_pred = knn.predict(test_data_frame.X)
 print 'K Nearest Neighbors f beta 0.5 on testing = ',fbeta_score(test_data_frame.yBool,y_pred,0.5)
 
-#Decision Tree f beta 0.5 on testing =  0.677447929323
-#Random Forest fbeta 0.5 on testing =  0.930730072143
