@@ -2,7 +2,7 @@
 \begin{enumerate}
 
 \item A continuación enumeramos los atributos que escogimos como potencialmente útiles y que luego implementamos para extraer automaticamente de los mails, estos fueron ideados por nosotros excepto por el atributo \textit{spell\_error\_count} el esta inspirado en el artículo \textit{Personalized Spam Filtering with
-Natural Language Attributes}\footnote{https://pdfs.semanticscholar.org/8c64/21ad08277291813690c41c14a55916e46034.pdf}, en este paper se mencionan algunas buenas ideas mas las cuales no llegamos a implementar como contar la cantidad de palabras poco comunes o la cantidad de verbos en el texto.
+Natural Language Attributes}\footnote{\url{https://pdfs.semanticscholar.org/8c64/21ad08277291813690c41c14a55916e46034.pdf}}, en este paper se mencionan algunas buenas ideas mas las cuales no llegamos a implementar como contar la cantidad de palabras poco comunes o la cantidad de verbos en el texto.
 
 \begin{itemize}
 \item Los correos de spam suelen ser enviados a un único destinatario, para capturar esta característica se extraen 3 atributos del encabezado del correo: \textit{recipient\_count}, \textit{has\_cc} y \textit{has\_cc} para extraer cantidad de destinatarios del correo, si hay destinatarios en copia y si hay destinatarios en copia oculta respectivamente.
