@@ -27,7 +27,7 @@ yBool = booleanizar(train_data_frame.y)
 
 
 clf = RandomForestClassifier(max_depth=14,criterion='entropy')
-param_grid = {'max_features' : ['sqrt','log2']}
+param_grid = {'max_features' : [None,'sqrt','log2']}
 f05_score = make_scorer(fbeta_score, beta=0.5)
 grid_search = GridSearchCV(clf,param_grid=param_grid, scoring=f05_score,n_jobs=4,cv=5,verbose=1)
 grid_search.fit(train_data_frame.X, yBool)
@@ -53,7 +53,6 @@ process_attributes(test_data_frame)
 test_data_frame.X = test_data_frame[test_data_frame.attributes].values
 test_data_frame.y = test_data_frame['class']
 test_data_frame.yBool = booleanizar(test_data_frame.y)
-test_data_frame.y_binarized = np.array([number[0] for number in test_data_frame.y_binarized])
 
 
 y_pred = grid_search.predict(test_data_frame.X)
