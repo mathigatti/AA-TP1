@@ -42,9 +42,12 @@ Luego para los valores de k que presentaron mejores resultados ejecutamos un gri
 Para este clasificador tuvimos que elegir primero la distribución que asumiriamos que iba a tener $ P(x_i | y) $, las opciones que consideramos fueron una distribución Gaussiana, Binomial y Multinomial. La distribución que mejores resultados obtuvo fue la Binomial lo cual tiene sentido debido a que modela bien la gran cantidad de atributos binarios, quizas si estos tuvieran mas de dos resultados posibles la distribución Multinomial o la Gaussiana habrian sido mejores opciónes.
 Los hiperparametros que consideramos fueron $alpha$ y $fit\_prior$ , el primero suaviza la función de distribución de cada atributo y el segundo intenta ir mejorando la estimación de los atributos y las clases a priori, a medida que va analizando nuevas instancias.
 
-
-\subsection{Suport Vector Machine}
+\subsection{Support Vector Machine}
 
 Debido a limitaciones de tiempo y computo solo pudimos probar SVM con los parametros dados por defecto en Sklearn, obtuvimos una performance del 83.5\% al realizar cross validation de 10 folds con el set de entrenamiento utilizando F0.5 como medida de score.
+
+SVC(C=1.0, kernel='rbf', degree=3, gamma='auto', coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1, decision_function_shape=None, random_state=None)
+
+\url{http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC}
 
 \end{enumerate}

@@ -7,8 +7,8 @@ from sklearn import tree, svm
 from sklearn.metrics import roc_auc_score, recall_score, precision_score,fbeta_score
 from sklearn.cross_validation import cross_val_score, train_test_split
 from sklearn.externals.six import StringIO
-from IPython.display import Image 
-import pydotplus as pydot
+from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
+from IPython.display import Image
 from collections import Counter,defaultdict
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
