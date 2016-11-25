@@ -1,11 +1,13 @@
 
-La idea de random forest es utlizar múltiples árboles de decisión para mejorar la eficacia del clasificador. Esto es posible gracias al bajo costos que lleva entrenar y consultar a cada árbol. Este modelo tiene sentido si se utilizan diferentes árboles que se complementen logrando mayor eficacia. Para lograr esto los atributos utilizados en las divisiones de los nodo al construir el árbol se limitan a un subconjunto aleatorio de los atributos. El tamaño de ese subconjunto suele determinar la diversidad lograda dentro del bosque. Utilizando los mismos parámetros que para el clasificador de un único árbol volvimos a hacer pruebas variando la cantidad de árboles del bosque y el tamaño del subconjunto de atributos a considerar. En la figura ~\ref{fig:forest_f05_en_funcion_de_cantidad_de_arboles} se puede ver claramente que utilizando la raíz cuadrada de la cantidad máxima de atributos como tamaño del subconjunto se obtienen los mejores resultados. Alcanzando la mayo eficacia para bosques de 35 árboles. 
-
+La idea de random forest es utlizar múltiples árboles de decisión para mejorar la eficacia del clasificador, reduciendo la alta varianza que se observa en la utilización de un único árbol. Esto es posible gracias al bajo costos que lleva entrenar y consultar a cada árbol. 
+ La reducción en la varianza suele ser mas significativa cuando el bosque se arma con árboles que utilicen diferentes atributos. Para lograr esto los atributos utilizados en las divisiones de los nodo al construir el árbol se limitan a un subconjunto aleatorio de los atributos, reduciendo la probabilidad que lo atributos con mayor ganancia de información dominen todos los arboles. 
+Utilizando los mismos parámetros que para el clasificador de un único árbol volvimos a hacer pruebas variando la cantidad de árboles del bosque y el tamaño del subconjunto de atributos a considerar. En la figura ~\ref{fig:forest_f05_en_funcion_de_cantidad_de_arboles} se muestran los resultados para bosques de diferentes tamaños considerando n, $\sqrt{n}$ y $\log(n)$ atributos, donde n es la cantidad total de atributos. A pesar de que considerando n atributos se observan mejores resultados, en los bosques de donde se consideran $\sqrt{n}$ atributos  la varianza es levemente inferior, por lo que esperamos que la eficacia con datos nuevas sea más parecida a lo que que observamos con cross validation sobre datos de entrenamiento. 
 
 \begin{figure}[H]
-    \centering
-        \includegraphics[width=\textwidth]{plots/forest_f05_en_funcion_de_cantidad_de_arboles.png}
-        \caption{f0.5 en funcíon de cantidad de árboles}
-        \label{fig:forest_f05_en_funcion_de_cantidad_de_arboles}
+\begin{center}
+\myss{0.45}{random_forest.pdf}{$f_{0.5}$ en funcíon de cantidad de árboles}{0.35}
+\myss{0.45}{random_forest_var.pdf}{varianza enfuncíon de cantidad de árboles}{0.35}
+\caption{Resultados grid search random forest}
+\label{fig:forest_f05_en_funcion_de_cantidad_de_arboles}
+\end{center}
 \end{figure}
-
