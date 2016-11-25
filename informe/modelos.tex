@@ -5,11 +5,11 @@ Este modelo tiene la ventaja de ser muy rápido pero presenta el problema de que
 \begin{figure}[H]
     \centering
         \includegraphics[width=\textwidth]{plots/arboles_f05_en_funcion_altura.png}
-        \caption{f0.5 en función de altura de árbol}
+        \caption{f0.5 en función de la altura del árbol}
         \label{fig:arboles_f05_en_funcion_altura}
 \end{figure}
 
-	El resultado de cross validation es un estimador de la eficacia que vamos a obtener clasificando correos nuevos y a pesar de que por lo general no aproxime correctamente la eficacia nos permite predecir que estamos haciendo sobre ajuste de datos de entrenamiento cuando al aumentar la altura baja o se mantiene la eficacia. Como se puede ver en la figura ~\ref{fig:arboles_f05_en_funcion_altura} a partir de arboles de altura 9 el aumento en la eficacia al variar la altura especia a bajar hasta que se estanca llegando a arboles de altura 15. 
+	El resultado de cross validation es un estimador de la eficacia que vamos a obtener clasificando correos nuevos y a pesar de que por lo general no aproxime correctamente la eficacia nos permite predecir que estamos haciendo sobre ajuste de datos de entrenamiento cuando al aumentar la altura baja o se mantiene la eficacia. Como se puede ver en la figura ~\ref{fig:arboles_f05_en_funcion_altura} a partir de arboles de altura 9 el aumento en la eficacia al variar la altura especia a bajar hasta que se estanca llegando a arboles de altura 15.
     Luego para para este rango de alturas ejecutamos un grid search a fin de obtener los mejores hiper-parametros para el clasificador. 
 
  \begin{enumerate}
@@ -36,7 +36,7 @@ Para este clasificador consideramos un enfoque parecido al de árbol de decisió
 \item \textit{Peso:} Este parámetro ponderar el peso de cada uno de los vecinos según su distancia o puede tratarlos a todos uniformemente ignorando la distancia. En nuestro caso se obtuvieron mejores resultados considerando los vecinos uniformemente.  
 \item \textit{Métrica de distancia:} Se probaron diferentes métricas de distancias, obteniendo los mejores resultados con la distancia manhattan en la cual la distancia entre dos puntos es la suma de las diferencias absolutas de sus coordenadas.
 \end{enumerate}
-	En el gráfico ~\ref{fig:knn_f05_en_funcion_vecinos} se observan los resultados del clasificador corriendo con los mejores atributos de Peso y Métrica de distancia que encontramos para este problema.
+	En el gráfico ~\ref{fig:knn_f05_en_funcion_vecinos} se observan los resultados del clasificador corriendo con los mejores atributos de \textit{Peso} y \textit{Métrica de Distancia} que encontramos para este problema.
 
 \subsection{Naive Bayes}
 
@@ -54,6 +54,6 @@ Los hiperparametros que consideramos fueron $alpha$ y $fit\_prior$ , el primero 
 
 Debido a limitaciones de tiempo y computo solo pudimos probar SVM con los parametros dados por defecto en Sklearn \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html\#sklearn.svm.SVC}}, obtuvimos una performance del 83.5\% al realizar cross validation de 10 folds con el set de entrenamiento utilizando F0.5 como medida de score.
 
-El clasificador con los parametros por defecto contiene como características principales un Kernel de Base Radial \footnote{\url{https://en.wikipedia.org/wiki/Radial_basis_function_kernel}} con parametro gamma = 1/numero\_de\_features y la heuristica llamada \textit{Shrinking} la cual permite computar los cálculos del Kernel de forma mas rápida.
+El clasificador con los parametros por defecto contiene como características principales un Kernel de Base Radial \footnote{\url{https://en.wikipedia.org/wiki/Radial_basis_function_kernel}} con parametro gamma = 1/numero\_de\_features y la heuristica llamada \textit{Shrinking} la cual permite realizar los computos del Kernel de forma mas rápida.
 
 \end{enumerate}
