@@ -27,16 +27,23 @@ train_data_frame.y = train_data_frame['class']
 yBool = booleanizar(train_data_frame.y)
 
 
-clf = MultinomialNB()
+test_data_frame = open_set('jsons/mail_testing_set.json','test_set')
+process_attributes(test_data_frame)
+test_data_frame.X = test_data_frame[test_data_frame.attributes].values
+test_data_frame.y = test_data_frame['class']
+test_data_frame.yBool = booleanizar(test_data_frame.y)
+
 param_grid = {'alpha':[0.0,0.5,1.0],
 		'fit_prior' : [ True, False],
 		}
 f05_score = make_scorer(fbeta_score, beta=0.5)
-grid_search = GridSearchCV(clf,param_grid=param_grid, scoring=f05_score,n_jobs=3,cv=5,verbose=1)
+
+clf = GaussianNB()
+grid_search = GridSearchCV(clf,param_grid={}, scoring=f05_score,n_jobs=3,cv=5,verbose=1)
 grid_search.fit(train_data_frame.X, yBool)
 
 
-csv_file = open('./plots/cv_grid_nb_' + 'f05' + '.csv', "w")
+csv_file = open('./plots/cv_grid_search_nb_Gaussian' + 'f05' + '.csv', "w")
 csv_file.write('mean_score,std dev score,alpha,fit_prior\n')
 for test in grid_search.grid_scores_:
 	csv_file.write(str(np.mean(test[2]))+','+str(np.std(test[2])))
@@ -49,14 +56,53 @@ csv_file.close()
 print grid_search.best_estimator_
 print grid_search.best_score_
 
-print 'Testing performance in Testing Data'
+print 'Testing performance in Testing Data Gaussian'
 
-test_data_frame = open_set('jsons/mail_testing_set.json','test_set')
-process_attributes(test_data_frame)
-test_data_frame.X = test_data_frame[test_data_frame.attributes].values
-test_data_frame.y = test_data_frame['class']
-test_data_frame.yBool = booleanizar(test_data_frame.y)
+y_pred = grid_search.predict(test_data_frame.X)
+print 'fbeta 0.5 on testing = ',fbeta_score(test_data_frame.yBool,y_pred,0.5)
 
+clf = BernoulliNB()
+grid_search = GridSearchCV(clf,param_grid=param_grid, scoring=f05_score,n_jobs=3,cv=5,verbose=1)
+grid_search.fit(train_data_frame.X, yBool)
+
+
+csv_file = open('./plots/cv_grid_search_nb_Bernoulli' + 'f05' + '.csv', "w")
+csv_file.write('mean_score,std dev score,alpha,fit_prior\n')
+for test in grid_search.grid_scores_:
+	csv_file.write(str(np.mean(test[2]))+','+str(np.std(test[2])))
+	for value in test[0].itervalues():
+		csv_file.write(',' + str(value))
+	csv_file.write('\n')
+
+csv_file.close()
+
+print grid_search.best_estimator_
+print grid_search.best_score_
+
+print 'Testing performance in Testing Data Bernoulli'
+
+y_pred = grid_search.predict(test_data_frame.X)
+print 'fbeta 0.5 on testing = ',fbeta_score(test_data_frame.yBool,y_pred,0.5)
+
+clf = MultinomialNB()
+grid_search = GridSearchCV(clf,param_grid=param_grid, scoring=f05_score,n_jobs=3,cv=5,verbose=1)
+grid_search.fit(train_data_frame.X, yBool)
+
+
+csv_file = open('./plots/cv_grid_search_nb_Multinomial' + 'f05' + '.csv', "w")
+csv_file.write('mean_score,std dev score,alpha,fit_prior\n')
+for test in grid_search.grid_scores_:
+	csv_file.write(str(np.mean(test[2]))+','+str(np.std(test[2])))
+	for value in test[0].itervalues():
+		csv_file.write(',' + str(value))
+	csv_file.write('\n')
+
+csv_file.close()
+
+print grid_search.best_estimator_
+print grid_search.best_score_
+
+print 'Testing performance in Testing Data Multinomial'
 
 y_pred = grid_search.predict(test_data_frame.X)
 print 'fbeta 0.5 on testing = ',fbeta_score(test_data_frame.yBool,y_pred,0.5)
